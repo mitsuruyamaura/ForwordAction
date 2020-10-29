@@ -8,12 +8,12 @@ public class BackgroundController : MonoBehaviour
 
     public float deadLine = -16f;
 
-    public float startLine = 15.8f;
+    public float startLine = 5.8f;
 
     void Start()
     {
-        startLine = transform.position.x;
-        Debug.Log(startLine);
+        //startLine = transform.position.x;
+        //Debug.Log(startLine);
     }
 
     void Update() {
