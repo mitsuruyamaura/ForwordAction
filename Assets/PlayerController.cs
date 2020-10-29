@@ -21,10 +21,38 @@ public class PlayerController : MonoBehaviour
 
     public bool isGrounded;
 
+    public int maxBallonCount;
+
+    public List<Ballon> ballonList = new List<Ballon>();
+
+    public Transform[] ballonTrans;
+
+    public Ballon ballonPrefab;
+
     void Start()
     {
         rb = GetComponent<Rigidbody2D>();
         scale = transform.localScale.x;
+
+        // バルーン生成
+        GenetateBallon(maxBallonCount);
+    }
+
+    private void GenetateBallon(int ballonCount) {
+        // バルーンの最大値の場合にはバルーンを生成しない
+        if (ballonList.Count >= maxBallonCount) {
+            return;
+        }
+
+        for (int i = 0; i < maxBallonCount; i++) {
+            // バルーン生成
+            Ballon ballon = Instantiate(ballonPrefab, ballonTrans[i]);
+
+            // バルーンの設定
+            ballon.SetUpBallon(this);
+
+            ballonList.Add(ballon);
+        }
     }
 
     // Update is called once per frame
@@ -62,5 +90,14 @@ public class PlayerController : MonoBehaviour
         float y = Mathf.Clamp(transform.position.y, -limitPosY, limitPosY);
 
         transform.position = new Vector2(x, y);
+    }
+
+    /// <summary>
+    /// バルーン破壊
+    /// </summary>
+    /// <param name="ballon"></param>
+    public void DestroyBallon(Ballon ballon) {
+        ballonList.Remove(ballon);
+        Destroy(ballon.gameObject);
     }
 }
