@@ -391,7 +391,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b207f5057b8d66040a45493974e9c3f6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  scrollSpeed: 0.01
+  scrollSpeed: 0.003
   deadLine: -20.7
   startLine: 20.7
 --- !u!1 &159657940
@@ -508,6 +508,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 52316f2e3e3e8f7459b3952feee9086d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  gameManager: {fileID: 700963099}
 --- !u!61 &170059694
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -1059,15 +1060,17 @@ MonoBehaviour:
   - {fileID: 4625967766515236197, guid: 06e34993056c23b43af68b3622a2c940, type: 3}
   generateTran: {fileID: 393718071}
   waitTime: 4
-  generateCount: 4
+  generateCount: 0
   checkCount: 3
-  wayCount: 2
+  wayCount: 0
   clearCount: 3
   goalPrefab: {fileID: 4364227329941604706, guid: 2bb8eacf0fb705d4c998a052a8b3b04f, type: 3}
   signPrefab: {fileID: 6613625264064594946, guid: fa7303926725493488666df24ecec77e, type: 3}
   isGameUp: 0
   ResultPopUpPrefab: {fileID: 3628878372006982104, guid: d616c69f965aa0944a399263fd42d8c8, type: 3}
   canvasTran: {fileID: 384411244}
+  txtInfo: {fileID: 1200324040}
+  canvasGroup: {fileID: 1541680809}
 --- !u!4 &700963100
 Transform:
   m_ObjectHideFlags: 0
@@ -1221,7 +1224,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b207f5057b8d66040a45493974e9c3f6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  scrollSpeed: 0.01
+  scrollSpeed: 0.003
   deadLine: -20.7
   startLine: 20.7
 --- !u!212 &1138041559
@@ -1638,7 +1641,7 @@ CanvasGroup:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1541680807}
   m_Enabled: 1
-  m_Alpha: 1
+  m_Alpha: 0
   m_Interactable: 1
   m_BlocksRaycasts: 1
   m_IgnoreParentGroups: 0
