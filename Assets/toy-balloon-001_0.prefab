@@ -112,3 +112,4 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b202da36534cd33439809b20f8edecea, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  isFloating: 0
