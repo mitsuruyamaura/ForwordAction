@@ -1,7 +1,7 @@
-﻿using DG.Tweening;
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using DG.Tweening;
 
 public class PlayerController : MonoBehaviour
 {
@@ -9,6 +9,7 @@ public class PlayerController : MonoBehaviour
     private string jump = "Jump";
 
     private Rigidbody2D rb;
+    private Animator anim;
 
     public float jumpPower;
     public float moveSpeed;
@@ -40,9 +41,12 @@ public class PlayerController : MonoBehaviour
 
     public bool isGameOver;
 
+    public UIManager uiManager;
+
     void Start()
     {
         rb = GetComponent<Rigidbody2D>();
+        anim = GetComponent<Animator>();
         scale = transform.localScale.x;
 
         // バルーン生成
@@ -63,6 +67,9 @@ public class PlayerController : MonoBehaviour
 
         // 生成中状態にする
         isGenerating = true;
+        anim.SetBool("Idel", false);
+
+        anim.SetTrigger("Generate");
 
         for (int i = 0; i < ballonCount; i++) {
             // バルーン生成
@@ -78,6 +85,8 @@ public class PlayerController : MonoBehaviour
 
         // 生成中状態終了。再度生成できるようにする
         isGenerating = false;
+
+        anim.SetBool("Idel", true);
     }
 
     // Update is called once per frame
@@ -94,6 +103,9 @@ public class PlayerController : MonoBehaviour
             // ジャンプ
             if (Input.GetButtonDown(jump)) {
                 rb.AddForce(transform.up * jumpPower);
+                anim.SetBool("Idel", false);
+                anim.SetFloat("Run", 0);
+                anim.SetTrigger("Jump");
             }          
         }
 
@@ -166,13 +178,15 @@ public class PlayerController : MonoBehaviour
                 temp.x = -scale;
             }
             transform.localScale = temp;  //  数値を戻す             
-                                          
+
             //  歩くアニメを再生する
-            //anim.SetFloat("Run", 0.7f);
+            anim.SetBool("Idel", false);
+            anim.SetFloat("Run", rb.velocity.x);
         } else {    //  左右の入力がなかったら横移動の速度を0にしてピタッと止まるようにする
             rb.velocity = new Vector2(0, rb.velocity.y);
             //  アニメの再生を止めてアイドル状態にする
-            //anim.SetFloat("Run", 0.0f);
+            anim.SetFloat("Run", 0.0f);
+            anim.SetBool("Idel", true);
         }
 
         // 移動範囲の制限
@@ -196,7 +210,9 @@ public class PlayerController : MonoBehaviour
 
         // コインに接触した場合
         if (col.gameObject.tag == "Coin") {
-            coinCount++;
+            coinCount += col.gameObject.GetComponent<Coin>().point;
+
+            uiManager.UpdateDisplayScore(coinCount);
             Destroy(col.gameObject);
         }
     }
