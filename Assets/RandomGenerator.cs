@@ -12,15 +12,30 @@ public class RandomGenerator : MonoBehaviour
 
     private float timer;
 
-    // Start is called before the first frame update
-    void Start()
-    {
-        
-    }
+    public int generateCount;
 
-    // Update is called once per frame
+    public int checkCount;
+
+    [SerializeField]
+    private CheckPointGenerator checkPointGenerator;
+
+    public int wayCount;
+
+    public int clearCount;
+
+    public GameObject goalPrefab;
+
+    public GameObject signPrefab;
+
+    public bool isGameUp;
+
+
     void Update()
     {
+        if (isGameUp == true) {
+            return;
+        }
+
         timer += Time.deltaTime;
 
         if (timer >= waitTime) {
@@ -30,6 +45,8 @@ public class RandomGenerator : MonoBehaviour
     }
 
     private void Generate() {
+        generateCount++;
+
         // 種類
         int randomVelue = Random.Range(0, 100);
 
@@ -47,5 +64,42 @@ public class RandomGenerator : MonoBehaviour
         float randomPosY = Random.Range(-4.0f, 4.0f);
 
         obj.transform.position = new Vector2(obj.transform.position.x, obj.transform.position.y + randomPosY);
+
+        // 生成回数が指定数を超えたら
+        if(generateCount > checkCount) {
+            // 0に戻す
+            generateCount = 0;
+
+            // チェックポイントかゴールを生成
+            CheckPoint();
+        }
+    }
+
+    /// <summary>
+    /// チェックポイントかゴールを生成の判定
+    /// </summary>
+    private void CheckPoint() {
+        wayCount++;
+
+        if (wayCount >= clearCount) {
+            isGameUp = true;
+            GenerateGoal();
+        } else {
+            GenerateSign();
+        }
+    }
+
+    /// <summary>
+    /// ゴール生成
+    /// </summary>
+    private void GenerateGoal() {
+        Instantiate(goalPrefab);
+    }
+
+    /// <summary>
+    /// 中間地点の看板生成
+    /// </summary>
+    private void GenerateSign() {
+        Instantiate(signPrefab);
     }
 }

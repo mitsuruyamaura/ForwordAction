@@ -206,4 +206,11 @@ public class PlayerController : MonoBehaviour
             transform.position += (direction * knockbackPower);
         }
     }
+
+    /// <summary>
+    /// ゴール到着
+    /// </summary>
+    public void Goal() {
+
+    }
 }
