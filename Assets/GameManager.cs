@@ -1,8 +1,7 @@
-﻿using DG.Tweening;
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.UI;
+using DG.Tweening;
 
 public class GameManager : MonoBehaviour
 {
@@ -32,21 +31,14 @@ public class GameManager : MonoBehaviour
 
     public Transform canvasTran;
 
-    public Text txtInfo;
-
-    public CanvasGroup canvasGroup;
+    [SerializeField]
+    private UIManager uiManager;
 
     IEnumerator Start() {
         isGameUp = true;
 
-        yield return null;
-
-        canvasGroup.alpha = 0;
-        canvasGroup.DOFade(1.0f, 0.5f);
-        txtInfo.text = "Game Start!";
-
-        yield return new WaitForSeconds(1.0f);
-        canvasGroup.DOFade(0f, 0.5f);
+        // ゲームスタート表示
+        yield return StartCoroutine(uiManager.DisplayGameStartInfo());
 
         isGameUp = false;
     }
@@ -136,10 +128,13 @@ public class GameManager : MonoBehaviour
         resultPopUp.GetComponent<ResultPopUp>().SetUpResultPopUp(score);
     }
 
+    /// <summary>
+    /// ゲームオーバー処理
+    /// </summary>
     public void GameOver() {
         isGameUp = true;
 
-        canvasGroup.DOFade(1.0f, 1.0f);
-        txtInfo.text = "Game Over...";
+        // ゲームオーバー表示
+        uiManager.DisplayGameOverInfo();
     }
 }
