@@ -44,8 +44,8 @@ public class RandomGenerator : MonoBehaviour
         GameObject obj = Instantiate(randomObj, generateTran);
 
         // 位置
-        float randomPos = Random.Range(-4.0f, 4.0f);
+        float randomPosY = Random.Range(-4.0f, 4.0f);
 
-        obj.transform.position = new Vector2(obj.transform.position.x, obj.transform.position.y + randomPos);
+        obj.transform.position = new Vector2(obj.transform.position.x, obj.transform.position.y + randomPosY);
     }
 }
