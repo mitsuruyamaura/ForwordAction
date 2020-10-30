@@ -762,6 +762,7 @@ GameObject:
   - component: {fileID: 1232417253}
   - component: {fileID: 1232417252}
   - component: {fileID: 1232417256}
+  - component: {fileID: 1232417257}
   m_Layer: 0
   m_Name: eagle-attack-1
   m_TagString: Enemy
@@ -890,6 +891,21 @@ Rigidbody2D:
   m_SleepingMode: 1
   m_CollisionDetection: 0
   m_Constraints: 4
+--- !u!114 &1232417257
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1232417251}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 51c9ff788c811be4cb97256fb8b17b77, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  moveTime: 4
+  moveRange: 0.5
+  moveSpeed: 0.005
 --- !u!1001 &5695791001396211329
 PrefabInstance:
   m_ObjectHideFlags: 0
