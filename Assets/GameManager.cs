@@ -1,6 +1,8 @@
-﻿using System.Collections;
+﻿using DG.Tweening;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class GameManager : MonoBehaviour
 {
@@ -29,6 +31,26 @@ public class GameManager : MonoBehaviour
     public GameObject ResultPopUpPrefab;
 
     public Transform canvasTran;
+
+    public Text txtInfo;
+
+    public CanvasGroup canvasGroup;
+
+    IEnumerator Start() {
+        isGameUp = true;
+
+        yield return null;
+
+        canvasGroup.alpha = 0;
+        canvasGroup.DOFade(1.0f, 0.5f);
+        txtInfo.text = "Game Start!";
+
+        yield return new WaitForSeconds(1.0f);
+        canvasGroup.DOFade(0f, 0.5f);
+
+        isGameUp = false;
+    }
+
 
 
     void Update()
@@ -112,5 +134,12 @@ public class GameManager : MonoBehaviour
     public void Goal(int score) {
         GameObject resultPopUp = Instantiate(ResultPopUpPrefab, canvasTran, false);
         resultPopUp.GetComponent<ResultPopUp>().SetUpResultPopUp(score);
+    }
+
+    public void GameOver() {
+        isGameUp = true;
+
+        canvasGroup.DOFade(1.0f, 1.0f);
+        txtInfo.text = "Game Over...";
     }
 }
