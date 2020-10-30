@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using DG.Tweening;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -29,22 +30,39 @@ public class PlayerController : MonoBehaviour
 
     public Ballon ballonPrefab;
 
+    public float generateTime;
+
+    public bool isGenerating;
+
+    public int coinCount;
+
+    public float knockbackPower;
+
     void Start()
     {
         rb = GetComponent<Rigidbody2D>();
         scale = transform.localScale.x;
 
         // バルーン生成
-        GenetateBallon(maxBallonCount);
+        StartCoroutine(GenetateBallon(maxBallonCount, 0));
     }
 
-    private void GenetateBallon(int ballonCount) {
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="ballonCount">生成するバルーンの数</param>
+    /// <param name="waitTime">１つ生成する際の生成にかかる時間</param>
+    /// <returns></returns>
+    private IEnumerator GenetateBallon(int ballonCount, float waitTime) {
         // バルーンの最大値の場合にはバルーンを生成しない
         if (ballonList.Count >= maxBallonCount) {
-            return;
+            yield break;
         }
 
-        for (int i = 0; i < maxBallonCount; i++) {
+        // 生成中状態にする
+        isGenerating = true;
+
+        for (int i = 0; i < ballonCount; i++) {
             // バルーン生成
             Ballon ballon = Instantiate(ballonPrefab, ballonTrans[i]);
 
@@ -52,20 +70,65 @@ public class PlayerController : MonoBehaviour
             ballon.SetUpBallon(this);
 
             ballonList.Add(ballon);
+
+            yield return new WaitForSeconds(waitTime);
         }
+
+        // 生成中状態終了。再度生成できるようにする
+        isGenerating = false;
     }
 
     // Update is called once per frame
     void Update()
     {
-        // ジャンプ
-        if (Input.GetButtonDown(jump)) {
-            rb.AddForce(transform.up * jumpPower);
+        // 地面接地
+        isGrounded = Physics2D.Linecast(transform.position + transform.up * 1f, transform.position - transform.up * 0.8f, groundLayer);
+
+        Debug.DrawLine(transform.position + transform.up * 1f, transform.position - transform.up * 0.8f, Color.red, 1.0f);
+
+        // バルーンが１つ以上あるなら
+        if (ballonList.Count > 0) {
+
+            // ジャンプ
+            if (Input.GetButtonDown(jump)) {
+                rb.AddForce(transform.up * jumpPower);
+            }          
         }
 
-        // 地面に接地したら、Y軸のVelocityを0にする(そうしないとずっとY軸のVelocityがマイナス方向に動く)
+        if(rb.velocity.y > 3.0f) {
+            rb.velocity = new Vector2(rb.velocity.x, 3.0f);
+        }
 
-        isGrounded = Physics2D.Linecast(transform.position + transform.up * 1f, transform.position - transform.up * 0.3f, groundLayer);
+        // 地面に接地していて、バルーンが２個以下の場合
+        if (isGrounded == true && ballonList.Count < maxBallonCount) {
+
+            // バルーンの生成中でなければ、バルーンを１つ作成する
+            if (Input.GetKeyDown(KeyCode.Q) && isGenerating == false) {
+                StartCoroutine(GenetateBallon(maxBallonCount, generateTime));
+            }
+        }
+
+        //　バルーンが１つ以上ある場合
+        if (ballonList.Count > 0) {
+            
+            if (Input.GetKeyDown(KeyCode.R)) {
+                // すべてのバルーンを切り離す
+                DetachBallons();
+            }
+        }
+    }
+
+    /// <summary>
+    /// すべてのバルーンを切り離す
+    /// </summary>
+    private void DetachBallons() {
+        for (int i = 0; i < ballonList.Count; i++) {
+            // バルーンを上空へ浮遊させる
+            ballonList[i].FloatingBallon();
+        }
+
+        // バルーンのリストをクリアし、再度、バルーンを生成できるようにする
+        ballonList.Clear();
     }
 
     void FixedUpdate() {
@@ -73,23 +136,45 @@ public class PlayerController : MonoBehaviour
         Move();    
     }
 
+    /// <summary>
+    /// 移動
+    /// </summary>
     private void Move() {
-        float posX = Input.GetAxis(horizontal);
+        // 水平(横)方向への入力受付
+        float x = Input.GetAxis(horizontal);
 
-        rb.velocity = new Vector2(posX * moveSpeed, rb.velocity.y);
+        if (x != 0) {
+            // 移動
+            rb.velocity = new Vector2(x * moveSpeed, rb.velocity.y);
 
-        // 移動方向に向きを合わせる
-        if (posX > 0) {
-            transform.localScale = new Vector3(scale, scale, scale);
-        } else {
-            transform.localScale = new Vector3(-scale, scale, scale);
+            // 移動方向に向きを合わせる
+            Vector3 temp = transform.localScale;
+            temp.x = x;
+
+            //  向きが変わるときに少数になるとキャラが縮んでしまうので
+            //  それを正の数にしてちゃんと描画する値にしてから戻す
+            //  数字が0よりも大きければすべて1にする
+            if (temp.x > 0) {
+                temp.x = scale;
+            } else {     //  数字が0よりも小さければすべて-1にする
+                temp.x = -scale;
+            }
+            transform.localScale = temp;  //  数値を戻す             
+                                          
+            //  歩くアニメを再生する
+            //anim.SetFloat("Run", 0.7f);
+        } else {    //  左右の入力がなかったら横移動の速度を0にしてピタッと止まるようにする
+            rb.velocity = new Vector2(0, rb.velocity.y);
+            //  アニメの再生を止めてアイドル状態にする
+            //anim.SetFloat("Run", 0.0f);
         }
 
         // 移動範囲の制限
-        float x = Mathf.Clamp(transform.position.x, -limitPosX, limitPosX);
-        float y = Mathf.Clamp(transform.position.y, -limitPosY, limitPosY);
+        float posX = Mathf.Clamp(transform.position.x, -limitPosX, limitPosX);
+        float posY = Mathf.Clamp(transform.position.y, -limitPosY, limitPosY);
 
-        transform.position = new Vector2(x, y);
+        // 制限範囲を超えた場合、移動を制限する
+        transform.position = new Vector2(posX, posY);
     }
 
     /// <summary>
@@ -99,5 +184,26 @@ public class PlayerController : MonoBehaviour
     public void DestroyBallon(Ballon ballon) {
         ballonList.Remove(ballon);
         Destroy(ballon.gameObject);
+    }
+
+    private void OnTriggerEnter2D(Collider2D col) {
+
+        // コインに接触した場合
+        if (col.gameObject.tag == "Coin") {
+            coinCount++;
+            Destroy(col.gameObject);
+        }
+    }
+
+    private void OnCollisionEnter2D(Collision2D col) {
+        if (col.gameObject.tag == "Enemy") {
+
+            // プレイヤーと敵の位置から距離と方向を計算
+            Vector3 direction = (transform.position - col.transform.position).normalized;
+
+            // 敵の反対側に吹き飛ばされる
+            //transform.DOMove(transform.position += (direction * knockbackPower), 0.1f);
+            transform.position += (direction * knockbackPower);
+        }
     }
 }
