@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class RandomGenerator : MonoBehaviour
+public class GameManager : MonoBehaviour
 {
     public GameObject[] generateObjs;
 
@@ -16,9 +16,6 @@ public class RandomGenerator : MonoBehaviour
 
     public int checkCount;
 
-    [SerializeField]
-    private CheckPointGenerator checkPointGenerator;
-
     public int wayCount;
 
     public int clearCount;
@@ -28,6 +25,10 @@ public class RandomGenerator : MonoBehaviour
     public GameObject signPrefab;
 
     public bool isGameUp;
+
+    public GameObject ResultPopUpPrefab;
+
+    public Transform canvasTran;
 
 
     void Update()
@@ -93,7 +94,9 @@ public class RandomGenerator : MonoBehaviour
     /// ゴール生成
     /// </summary>
     private void GenerateGoal() {
-        Instantiate(goalPrefab);
+        GameObject goal = Instantiate(goalPrefab);
+        GoalHouse goalHouse = goal.GetComponent<GoalHouse>();
+        goalHouse.SetUpGoalHouse(this);
     }
 
     /// <summary>
@@ -101,5 +104,13 @@ public class RandomGenerator : MonoBehaviour
     /// </summary>
     private void GenerateSign() {
         Instantiate(signPrefab);
+    }
+
+    /// <summary>
+    /// ゴール到着
+    /// </summary>
+    public void Goal(int score) {
+        GameObject resultPopUp = Instantiate(ResultPopUpPrefab, canvasTran, false);
+        resultPopUp.GetComponent<ResultPopUp>().SetUpResultPopUp(score);
     }
 }

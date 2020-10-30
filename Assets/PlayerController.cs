@@ -14,7 +14,7 @@ public class PlayerController : MonoBehaviour
     public float moveSpeed;
 
     private float limitPosX = 9.5f;
-    private float limitPosY = 4.2f;
+    private float limitPosY = 4.35f;
     private float scale;
 
     [SerializeField, Header("Linecast用 地面判定レイヤー")]
@@ -37,6 +37,8 @@ public class PlayerController : MonoBehaviour
     public int coinCount;
 
     public float knockbackPower;
+
+    public bool isGameOver;
 
     void Start()
     {
@@ -140,6 +142,10 @@ public class PlayerController : MonoBehaviour
     /// 移動
     /// </summary>
     private void Move() {
+        if (isGameOver == true) {
+            
+            return;
+        }
         // 水平(横)方向への入力受付
         float x = Input.GetAxis(horizontal);
 
@@ -208,9 +214,9 @@ public class PlayerController : MonoBehaviour
     }
 
     /// <summary>
-    /// ゴール到着
+    /// ゲームオーバー
     /// </summary>
-    public void Goal() {
-
+    public void GameOver() {
+        isGameOver = true;
     }
 }
