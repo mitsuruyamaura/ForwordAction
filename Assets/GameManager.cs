@@ -34,8 +34,33 @@ public class GameManager : MonoBehaviour
     [SerializeField]
     private UIManager uiManager;
 
+    [SerializeField]
+    private TitleObjectController titleObjectController;
+
+    [SerializeField]
+    private StartObject startObject;
+
+    private bool isTitleUp = false;
+
     IEnumerator Start() {
         isGameUp = true;
+
+        // タイトル表示
+        uiManager.SwitchDisplayTitle(true, 1.0f);
+
+        isTitleUp = true;
+
+        // タップを待つ
+        yield return new WaitUntil(() => isTitleUp == false);
+
+        // タイトルを非表示
+        uiManager.SwitchDisplayTitle(false, 0);
+
+        // ゴール地点を画面外に移動させる
+        titleObjectController.MoveObject();
+
+        // スタート地点を少しずつ画面外に移動させる
+        startObject.StartGame();
 
         // ゲームスタート表示
         yield return StartCoroutine(uiManager.DisplayGameStartInfo());
@@ -47,6 +72,16 @@ public class GameManager : MonoBehaviour
 
     void Update()
     {
+        // タイトル表示中
+        if (isTitleUp == true) {
+
+            // タップするか、スペースを押すと
+            if (Input.GetMouseButtonDown(0) || Input.GetKeyDown(KeyCode.Space)) {
+                // タイトル表示を終了させる制御にうつる
+                isTitleUp = false;
+            }
+        }
+
         if (isGameUp == true) {
             return;
         }
