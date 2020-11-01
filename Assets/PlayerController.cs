@@ -72,8 +72,14 @@ public class PlayerController : MonoBehaviour
         anim.SetTrigger("Generate");
 
         for (int i = 0; i < ballonCount; i++) {
-            // バルーン生成
-            Ballon ballon = Instantiate(ballonPrefab, ballonTrans[i]);
+            Ballon ballon;
+            if (ballonList.Count == 0) {
+                // 1つ目のバルーン生成
+                ballon = Instantiate(ballonPrefab, ballonTrans[0]);
+            } else {
+                // 2つ目のバルーン生成
+                ballon = Instantiate(ballonPrefab, ballonTrans[1]);
+            }
 
             // バルーンの設定
             ballon.SetUpBallon(this);
@@ -82,6 +88,9 @@ public class PlayerController : MonoBehaviour
 
             yield return new WaitForSeconds(waitTime);
         }
+
+        // バルーンの数で重力を変化
+        ChangeGravityScale();
 
         // 生成中状態終了。再度生成できるようにする
         isGenerating = false;
@@ -100,16 +109,24 @@ public class PlayerController : MonoBehaviour
         // バルーンが１つ以上あるなら
         if (ballonList.Count > 0) {
 
-            // ジャンプ
+            // ジャンプ。バルーンの数が少ないとジャンプの距離も少なくなる
             if (Input.GetButtonDown(jump)) {
-                rb.AddForce(transform.up * jumpPower);
+                rb.AddForce(transform.up * jumpPower * ballonList.Count / maxBallonCount);
                 anim.SetBool("Idel", false);
                 anim.SetFloat("Run", 0);
                 anim.SetTrigger("Jump");
-            }          
+            }
+
+            // 空中にいる間にRボタンを押すと
+            if (Input.GetKeyDown(KeyCode.R) && isGrounded == false) {
+                // すべてのバルーンを切り離す(地面や床にいる間は不可)
+                DetachBallons();
+            }
         }
 
+        // 一番高い場所まで到達している場合
         if(rb.velocity.y > 3.0f) {
+            // Y軸の速度に制限をかける(そうしないと上空で待機できてしまう)
             rb.velocity = new Vector2(rb.velocity.x, 3.0f);
         }
 
@@ -118,16 +135,7 @@ public class PlayerController : MonoBehaviour
 
             // バルーンの生成中でなければ、バルーンを１つ作成する
             if (Input.GetKeyDown(KeyCode.Q) && isGenerating == false) {
-                StartCoroutine(GenetateBallon(maxBallonCount, generateTime));
-            }
-        }
-
-        //　バルーンが１つ以上ある場合
-        if (ballonList.Count > 0) {
-            
-            if (Input.GetKeyDown(KeyCode.R)) {
-                // すべてのバルーンを切り離す
-                DetachBallons();
+                StartCoroutine(GenetateBallon(1, generateTime));
             }
         }
     }
@@ -143,6 +151,9 @@ public class PlayerController : MonoBehaviour
 
         // バルーンのリストをクリアし、再度、バルーンを生成できるようにする
         ballonList.Clear();
+
+        // バルーンの数で重力を変化
+        ChangeGravityScale();
     }
 
     void FixedUpdate() {
@@ -180,13 +191,18 @@ public class PlayerController : MonoBehaviour
             transform.localScale = temp;  //  数値を戻す             
 
             //  歩くアニメを再生する
-            anim.SetBool("Idel", false);
-            anim.SetFloat("Run", rb.velocity.x);
+            if (isGrounded == true) {
+                anim.SetBool("Idel", false);
+                anim.SetFloat("Run", rb.velocity.x);
+            }
         } else {    //  左右の入力がなかったら横移動の速度を0にしてピタッと止まるようにする
             rb.velocity = new Vector2(0, rb.velocity.y);
             //  アニメの再生を止めてアイドル状態にする
-            anim.SetFloat("Run", 0.0f);
-            anim.SetBool("Idel", true);
+
+            if (isGrounded == true) {
+                anim.SetFloat("Run", 0.0f);
+                anim.SetBool("Idel", true);
+            }
         }
 
         // 移動範囲の制限
@@ -204,6 +220,9 @@ public class PlayerController : MonoBehaviour
     public void DestroyBallon(Ballon ballon) {
         ballonList.Remove(ballon);
         Destroy(ballon.gameObject);
+
+        // バルーンの数で重力を変化
+        ChangeGravityScale();
     }
 
     private void OnTriggerEnter2D(Collider2D col) {
@@ -234,5 +253,19 @@ public class PlayerController : MonoBehaviour
     /// </summary>
     public void GameOver() {
         isGameOver = true;
+    }
+
+    /// <summary>
+    /// バルーンの数に応じて重力を変化
+    /// </summary>
+    private void ChangeGravityScale() {
+        // バルーンの数が少ないほど重力が大きくなり、自然落下の速度が速くなる
+        if (ballonList.Count == 0) {
+            rb.gravityScale = 1.0f;
+        } else if (ballonList.Count == 1){
+            rb.gravityScale = 0.75f;
+        } else {
+            rb.gravityScale = 0.5f;
+        }
     }
 }
