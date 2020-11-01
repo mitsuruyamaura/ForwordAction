@@ -2290,6 +2290,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   moveObject: {fileID: 1466578558}
+  playerController: {fileID: 6889675}
 --- !u!1 &1478875864
 GameObject:
   m_ObjectHideFlags: 0

@@ -45,6 +45,8 @@ public class PlayerController : MonoBehaviour
 
     void Start()
     {
+        isGameOver = true;
+
         rb = GetComponent<Rigidbody2D>();
         anim = GetComponent<Animator>();
         scale = transform.localScale.x;
@@ -169,6 +171,7 @@ public class PlayerController : MonoBehaviour
             
             return;
         }
+
         // 水平(横)方向への入力受付
         float x = Input.GetAxis(horizontal);
 
@@ -253,6 +256,13 @@ public class PlayerController : MonoBehaviour
     /// </summary>
     public void GameOver() {
         isGameOver = true;
+    }
+
+    /// <summary>
+    /// ゲームスタート
+    /// </summary>
+    public void GameStart() {
+        isGameOver = false;
     }
 
     /// <summary>
