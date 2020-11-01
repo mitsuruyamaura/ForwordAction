@@ -11,12 +11,13 @@ public class Ballon : MonoBehaviour
     private Rigidbody2D rb;
     private Vector2 pos;
 
-    //private SpriteRenderer spriteRenderer;
+    private CapsuleCollider2D capsuleCollider;
+
+    private Tweener tweener;
 
 
     public void SetUpBallon(PlayerController playerController) {
         this.playerController = playerController;
-        //spriteRenderer = GetComponent<SpriteRenderer>();
 
         // 本来のScaleを保持
         Vector3 scale = transform.localScale;
@@ -28,7 +29,7 @@ public class Ballon : MonoBehaviour
         transform.DOScale(scale, 2.0f).SetEase(Ease.InBounce);
 
         // 左右にふわふわさせる
-        transform.DOLocalMoveX(0.05f, 0.2f).SetEase(Ease.Flash).SetLoops(-1, LoopType.Yoyo);
+        tweener = transform.DOLocalMoveX(0.05f, 0.2f).SetEase(Ease.Flash).SetLoops(-1, LoopType.Yoyo);
     }
 
     private void OnCollisionEnter2D(Collision2D col) {
@@ -43,6 +44,8 @@ public class Ballon : MonoBehaviour
     /// バルーンを上空へ飛ばす準備
     /// </summary>
     public void FloatingBallon() {
+        // 左右にふわふわループアニメを破棄する
+        tweener.Kill();
 
         // Rigidbody2Dコンポーネントをバルーンに追加する
         rb = gameObject.AddComponent<Rigidbody2D>();
@@ -53,8 +56,17 @@ public class Ballon : MonoBehaviour
         // 回転も固定する
         rb.freezeRotation = true;
 
+        // バルーンのコライダーを取得する
+        capsuleCollider = GetComponent<CapsuleCollider2D>();
+
+        // コライダーのスイッチをオフにする
+        capsuleCollider.enabled = false;
+
         // バルーンの位置情報を代入
         pos = transform.position;
+
+        // 親子関係を解消する(特にPlayerが地面・床の子オブジェクトになっている場合に不具合になる)
+        transform.SetParent(null);
 
         // バルーンとプレイヤーを切り離す状態にする
         isFloating = true;
