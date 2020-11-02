@@ -1458,9 +1458,9 @@ MonoBehaviour:
   - {fileID: 4625967766515236197, guid: 06e34993056c23b43af68b3622a2c940, type: 3}
   generateTran: {fileID: 393718071}
   waitTime: 4
-  generateCount: 0
+  generateCount: 3
   checkCount: 3
-  wayCount: 0
+  wayCount: 2
   clearCount: 3
   goalPrefab: {fileID: 4364227329941604706, guid: 2bb8eacf0fb705d4c998a052a8b3b04f, type: 3}
   signPrefab: {fileID: 6613625264064594946, guid: fa7303926725493488666df24ecec77e, type: 3}
