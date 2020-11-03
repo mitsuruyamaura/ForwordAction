@@ -42,8 +42,15 @@ public class GameManager : MonoBehaviour
 
     private bool isTitleUp = false;
 
+
+    [SerializeField]
+    private AudioManager audioManager;
+
     IEnumerator Start() {
         isGameUp = true;
+
+        // タイトル曲再生
+        StartCoroutine(audioManager.PlayBGM(0));
 
         // タイトル表示
         uiManager.SwitchDisplayTitle(true, 1.0f);
@@ -52,6 +59,9 @@ public class GameManager : MonoBehaviour
 
         // タップを待つ
         yield return new WaitUntil(() => isTitleUp == false);
+
+        // タイトル曲を終了し、ゲーム内曲を再生
+        StartCoroutine(audioManager.PlayBGM(1));
 
         // タイトルを非表示
         uiManager.SwitchDisplayTitle(false, 0);
@@ -159,6 +169,9 @@ public class GameManager : MonoBehaviour
     /// ゴール到着
     /// </summary>
     public void Goal(int score) {
+        // クリアの曲再生
+        StartCoroutine(audioManager.PlayBGM(2));
+
         GameObject resultPopUp = Instantiate(ResultPopUpPrefab, canvasTran, false);
         resultPopUp.GetComponent<ResultPopUp>().SetUpResultPopUp(score);
     }

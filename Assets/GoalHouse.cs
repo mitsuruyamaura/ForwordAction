@@ -18,6 +18,9 @@ public class GoalHouse : MonoBehaviour
 
     public void SetUpGoalHouse(GameManager gameManager) {
         this.gameManager = gameManager;
+
+        // 落下防止の床を非表示
+        secretfloor.SetActive(false);
     }
 
     void Update() {
@@ -38,6 +41,9 @@ public class GoalHouse : MonoBehaviour
             gameManager.Goal(playerController.coinCount);
 
             // 落下防止の床を表示
+            secretfloor.SetActive(true);
+
+            // 落下防止の床を画面下からアニメさせて表示
             secretfloor.transform.DOLocalMoveY(0.45f, 2.5f).SetEase(Ease.Linear).SetRelative();
         }
     }
