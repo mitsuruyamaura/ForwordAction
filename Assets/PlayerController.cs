@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using DG.Tweening;
+using UnityEngine.UI;
 
 public class PlayerController : MonoBehaviour
 {
@@ -43,6 +44,16 @@ public class PlayerController : MonoBehaviour
 
     public UIManager uiManager;
 
+    [SerializeField]
+    private Joystick joystick;
+
+    [SerializeField]
+    private Button btnJump;
+
+    [SerializeField]
+    private Button btnDetach;
+
+
     void Start()
     {
         isGameOver = true;
@@ -50,6 +61,9 @@ public class PlayerController : MonoBehaviour
         rb = GetComponent<Rigidbody2D>();
         anim = GetComponent<Animator>();
         scale = transform.localScale.x;
+
+        btnJump.onClick.AddListener(OnClickJump);
+        btnDetach.onClick.AddListener(OnClickDetachOrGenerate);
 
         // バルーン生成
         StartCoroutine(GenetateBallon(maxBallonCount, 0));
@@ -113,10 +127,7 @@ public class PlayerController : MonoBehaviour
 
             // ジャンプ。バルーンの数が少ないとジャンプの距離も少なくなる
             if (Input.GetButtonDown(jump)) {
-                rb.AddForce(transform.up * jumpPower * ballonList.Count / maxBallonCount);
-                anim.SetBool("Idel", false);
-                anim.SetFloat("Run", 0);
-                anim.SetTrigger("Jump");
+                Jump();
             }
 
             // 空中にいる間にRボタンを押すと
@@ -140,6 +151,13 @@ public class PlayerController : MonoBehaviour
                 StartCoroutine(GenetateBallon(1, generateTime));
             }
         }
+    }
+
+    private void Jump() {
+        rb.AddForce(transform.up * jumpPower * ballonList.Count / maxBallonCount);
+        anim.SetBool("Idel", false);
+        anim.SetFloat("Run", 0);
+        anim.SetTrigger("Jump");
     }
 
     /// <summary>
@@ -167,14 +185,16 @@ public class PlayerController : MonoBehaviour
     /// 移動
     /// </summary>
     private void Move() {
-        if (isGameOver == true) {
-            
+        if (isGameOver == true) {           
             return;
         }
 
+#if UNITY_EDITOR
         // 水平(横)方向への入力受付
         float x = Input.GetAxis(horizontal);
-
+#else
+        float x = joystick.Horizontal;
+#endif
         if (x != 0) {
             // 移動
             rb.velocity = new Vector2(x * moveSpeed, rb.velocity.y);
@@ -276,6 +296,25 @@ public class PlayerController : MonoBehaviour
             rb.gravityScale = 0.75f;
         } else {
             rb.gravityScale = 0.5f;
+        }
+    }
+
+    private void OnClickJump() {
+        // バルーンが１つ以上あるなら
+        if (ballonList.Count > 0) {
+            Jump();
+        }
+    }
+
+    private void OnClickDetachOrGenerate() {
+        // バルーンが1つ以上あり、空中にいる間なら
+        if (ballonList.Count > 0 && !isGrounded) {
+            // バルーンを切り離す
+            DetachBallons();
+        } else if (isGrounded == true && ballonList.Count < maxBallonCount && isGenerating == false) {
+            // 地面に接地していて、バルーンが２個以下の場合
+            // バルーンの生成中でなければ、バルーンを１つ作成する
+            StartCoroutine(GenetateBallon(1, generateTime));
         }
     }
 }
