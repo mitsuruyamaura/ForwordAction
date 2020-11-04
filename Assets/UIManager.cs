@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using DG.Tweening;
+using UnityEngine.SceneManagement;
 
 public class UIManager : MonoBehaviour
 {
@@ -42,6 +43,8 @@ public class UIManager : MonoBehaviour
 
         canvasGroupInfo.DOFade(1.0f, 1.0f);
         txtInfo.text = "Game Over...";
+
+
     }
 
     /// <summary>
@@ -64,5 +67,16 @@ public class UIManager : MonoBehaviour
 
         // Tap Startの文字をゆっくり点滅させる
         txtStart.gameObject.GetComponent<CanvasGroup>().DOFade(0, 1.0f).SetEase(Ease.Linear).SetLoops(-1, LoopType.Yoyo);
+    }
+
+    /// <summary>
+    /// タイトルへ戻る
+    /// </summary>
+    public void RestartGame() {
+
+        // 現在のシーンの名前を取得
+        string sceneName = SceneManager.GetActiveScene().name;
+
+        canvasGroupInfo.DOFade(0f, 1.0f).OnComplete(()=> { SceneManager.LoadScene(sceneName); });
     }
 }

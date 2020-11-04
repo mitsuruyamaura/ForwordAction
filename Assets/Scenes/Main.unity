@@ -228,7 +228,7 @@ Transform:
   - {fileID: 677923004}
   - {fileID: 159657941}
   m_Father: {fileID: 0}
-  m_RootOrder: 3
+  m_RootOrder: 4
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &6889675
 MonoBehaviour:
@@ -487,8 +487,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   scrollSpeed: 0.003
-  deadLine: -20.7
-  startLine: 20.7
+  stopPosition: -20.7
+  restartPosition: 20.7
 --- !u!1 &156174424
 GameObject:
   m_ObjectHideFlags: 0
@@ -781,7 +781,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 170059692}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -0.212, y: -6.61, z: 0}
+  m_LocalPosition: {x: -0.212, y: -6.86, z: 0}
   m_LocalScale: {x: 65.77366, y: 10, z: 10}
   m_Children: []
   m_Father: {fileID: 0}
@@ -1563,9 +1563,9 @@ MonoBehaviour:
   - {fileID: 4625967766515236197, guid: 06e34993056c23b43af68b3622a2c940, type: 3}
   generateTran: {fileID: 393718071}
   waitTime: 4
-  generateCount: 3
+  generateCount: 0
   checkCount: 3
-  wayCount: 2
+  wayCount: 0
   clearCount: 3
   goalPrefab: {fileID: 4364227329941604706, guid: 2bb8eacf0fb705d4c998a052a8b3b04f, type: 3}
   signPrefab: {fileID: 6613625264064594946, guid: fa7303926725493488666df24ecec77e, type: 3}
@@ -2041,8 +2041,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   scrollSpeed: 0.003
-  deadLine: -20.7
-  startLine: 20.7
+  stopPosition: -20.7
+  restartPosition: 20.7
 --- !u!212 &1138041559
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -2416,6 +2416,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Floating Joystick
       objectReference: {fileID: 0}
+    - target: {fileID: 8170153791668043269, guid: 0d230cc8be529a542a08cb878ab14b18, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 8170153791961219458, guid: 0d230cc8be529a542a08cb878ab14b18, type: 3}
       propertyPath: m_CullTransparentMesh
       value: 1
@@ -2738,7 +2742,7 @@ Transform:
   - {fileID: 779409313}
   - {fileID: 1198935071}
   m_Father: {fileID: 0}
-  m_RootOrder: 4
+  m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &1466578560
 MonoBehaviour:
@@ -3123,6 +3127,36 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
+--- !u!1 &1582507205
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1582507206}
+  m_Layer: 0
+  m_Name: GameObject
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1582507206
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1582507205}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 13
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1597375650
 GameObject:
   m_ObjectHideFlags: 0
@@ -3719,8 +3753,8 @@ AudioSource:
   m_Enabled: 1
   serializedVersion: 4
   OutputAudioMixerGroup: {fileID: 0}
-  m_audioClip: {fileID: 0}
-  m_PlayOnAwake: 1
+  m_audioClip: {fileID: 8300000, guid: b7e3c5b990ba47243b96377dceb19f65, type: 3}
+  m_PlayOnAwake: 0
   m_Volume: 1
   m_Pitch: 1
   Loop: 0
