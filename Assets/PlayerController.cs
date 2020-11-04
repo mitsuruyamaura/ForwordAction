@@ -16,7 +16,7 @@ public class PlayerController : MonoBehaviour
     public float moveSpeed;
 
     private float limitPosX = 9.5f;
-    private float limitPosY = 4.35f;
+    private float limitPosY = 4.45f;
     private float scale;
 
     [SerializeField, Header("Linecast用 地面判定レイヤー")]

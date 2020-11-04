@@ -20,6 +20,10 @@ public class AudioManager : MonoBehaviour
             // 徐々にボリュームを下げる
             audioSources[index - 1].DOFade(0, 0.75f);
             Debug.Log("前の曲のボリューム下げる");
+        } 
+        if (index == 3) {
+            // 徐々にボリュームを下げる
+            audioSources[index - 2].DOFade(0, 0.75f);
         }
 
         // 前の曲のボリュームが下がるのを待つ

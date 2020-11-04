@@ -42,12 +42,15 @@ public class GameManager : MonoBehaviour
 
     private bool isTitleUp = false;
 
+    private bool isRestart = false;
+
 
     [SerializeField]
     private AudioManager audioManager;
 
     IEnumerator Start() {
         isGameUp = true;
+        isRestart = true;
 
         // タイトル曲再生
         StartCoroutine(audioManager.PlayBGM(0));
@@ -76,6 +79,7 @@ public class GameManager : MonoBehaviour
         yield return StartCoroutine(uiManager.DisplayGameStartInfo());
 
         isGameUp = false;
+        isRestart = false;
     }
 
 
@@ -92,7 +96,16 @@ public class GameManager : MonoBehaviour
             }
         }
 
-        if (isGameUp == true) {
+        if (isGameUp == true && isTitleUp == false) {
+
+            if (Input.GetMouseButtonDown(0) || Input.GetKeyDown(KeyCode.Space)) {
+
+                if (isRestart == false) {
+                    isRestart = true;
+                    uiManager.RestartGame();
+                }          
+            }
+
             return;
         }
 
@@ -184,5 +197,7 @@ public class GameManager : MonoBehaviour
 
         // ゲームオーバー表示
         uiManager.DisplayGameOverInfo();
+
+        StartCoroutine(audioManager.PlayBGM(3));
     }
 }
