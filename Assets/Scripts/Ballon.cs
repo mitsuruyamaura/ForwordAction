@@ -7,6 +7,7 @@ public class Ballon : MonoBehaviour
 {
     private PlayerController playerController;
 
+    [HideInInspector]
     public bool isFloating;
     private Rigidbody2D rb;
     private Vector2 pos;
@@ -15,7 +16,10 @@ public class Ballon : MonoBehaviour
 
     private Tweener tweener;
 
-
+    /// <summary>
+    /// バルーンの初期設定
+    /// </summary>
+    /// <param name="playerController"></param>
     public void SetUpBallon(PlayerController playerController) {
         this.playerController = playerController;
 
@@ -29,7 +33,7 @@ public class Ballon : MonoBehaviour
         transform.DOScale(scale, 2.0f).SetEase(Ease.InBounce);
 
         // 左右にふわふわさせる
-        tweener = transform.DOLocalMoveX(0.05f, 0.2f).SetEase(Ease.Flash).SetLoops(-1, LoopType.Yoyo);
+        tweener = transform.DOLocalMoveX(0.02f, 0.2f).SetEase(Ease.Flash).SetLoops(-1, LoopType.Yoyo);
     }
 
     private void OnCollisionEnter2D(Collision2D col) {
@@ -37,6 +41,13 @@ public class Ballon : MonoBehaviour
 
             // PlayerControllerのDestroyBallonメソッドを呼び出し、バルーンの破壊処理を行う
             playerController.DestroyBallon(this);
+
+
+            // 左右にふわふわループアニメを破棄する
+            tweener.Kill();
+
+
+            playerController.DestroyBallon();
         }
     }
 

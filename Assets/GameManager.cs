@@ -1,19 +1,33 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using DG.Tweening;
+using System.Linq;
 
 public class GameManager : MonoBehaviour
 {
-    public GameObject[] generateObjs;
+    [SerializeField]
+    private GameObject aerialFloorPrefab;
 
-    public Transform generateTran;
+    [SerializeField]
+    private GameObject enemyPrefab;
 
+    [SerializeField]
+    private GameObject coinPrefab;
+
+    [SerializeField, HideInInspector]
+    private GameObject[] generateObjs;
+
+    [SerializeField]
+    private Transform generateTran;
+
+    [Header("生成までの待機時間")]
     public float waitTime;
 
     private float timer;
 
     public int generateCount;
+
+
 
     public int checkCount;
 
@@ -38,7 +52,7 @@ public class GameManager : MonoBehaviour
     private TitleObjectController titleObjectController;
 
     [SerializeField]
-    private StartObject startObject;
+    private StartChecker startChecker;
 
     private bool isTitleUp = false;
 
@@ -73,7 +87,7 @@ public class GameManager : MonoBehaviour
         titleObjectController.MoveObject();
 
         // スタート地点を少しずつ画面外に移動させる
-        startObject.StartGame();
+        //startChecker.SetInitialSpeed();
 
         // ゲームスタート表示
         yield return StartCoroutine(uiManager.DisplayGameStartInfo());
@@ -105,47 +119,56 @@ public class GameManager : MonoBehaviour
                     uiManager.RestartGame();
                 }          
             }
+        }
 
+        if (isGameUp == true) {
             return;
         }
 
-        timer += Time.deltaTime;
+        if (wayCount < clearCount) {
+            timer += Time.deltaTime;
 
-        if (timer >= waitTime) {
-            timer = 0;
-            Generate();
-        }   
+            if (timer >= waitTime) {
+                timer = 0;
+                Generate();
+            }
+        }
     }
 
+    /// <summary>
+    /// プレファブを元にクローンのゲームオブジェクトを生成
+    /// </summary>
     private void Generate() {
         generateCount++;
 
         // 種類
-        int randomVelue = Random.Range(0, 100);
+        //int randomVelue = Random.Range(0, 100);
 
-        GameObject randomObj = null;
-        if (randomVelue < 30) {
-            randomObj = generateObjs[0];
-        } else if (randomVelue >= 30 && randomVelue < 60) {
-            randomObj = generateObjs[1];
-        } else {
-            randomObj = generateObjs[2];
-        }
-        GameObject obj = Instantiate(randomObj, generateTran);
+        //GameObject randomObj = null;
+        //if (randomVelue < 30) {
+        //    randomObj = generateObjs[0];
+        //} else if (randomVelue >= 30 && randomVelue < 60) {
+        //    randomObj = generateObjs[1];
+        //} else {
+        //    randomObj = generateObjs[2];
+        //}
+        //GameObject obj = Instantiate(randomObj, generateTran);
+
+        GameObject obj = Instantiate(aerialFloorPrefab, generateTran);    // generateObjs[0]
 
         // 位置
-        float randomPosY = Random.Range(-4.0f, 4.0f);
+        float randomPosY = Random.Range(-3.8f, 3.8f);
 
         obj.transform.position = new Vector2(obj.transform.position.x, obj.transform.position.y + randomPosY);
 
         // 生成回数が指定数を超えたら
-        if(generateCount > checkCount) {
-            // 0に戻す
-            generateCount = 0;
+        //if(generateCount > checkCount) {
+        //    // 0に戻す
+        //    generateCount = 0;
 
-            // チェックポイントかゴールを生成
-            CheckPoint();
-        }
+        //    // チェックポイントかゴールを生成
+        //    CheckPoint();
+        //}
     }
 
     /// <summary>
@@ -155,7 +178,6 @@ public class GameManager : MonoBehaviour
         wayCount++;
 
         if (wayCount >= clearCount) {
-            isGameUp = true;
             GenerateGoal();
         } else {
             GenerateSign();
@@ -182,6 +204,8 @@ public class GameManager : MonoBehaviour
     /// ゴール到着
     /// </summary>
     public void Goal(int score) {
+        isGameUp = true;
+
         // クリアの曲再生
         StartCoroutine(audioManager.PlayBGM(2));
 
@@ -193,6 +217,8 @@ public class GameManager : MonoBehaviour
     /// ゲームオーバー処理
     /// </summary>
     public void GameOver() {
+        Debug.Log("Game Over");
+
         isGameUp = true;
 
         // ゲームオーバー表示

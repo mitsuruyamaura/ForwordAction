@@ -19,7 +19,7 @@ public class AudioManager : MonoBehaviour
         if (index != 0) {
             // 徐々にボリュームを下げる
             audioSources[index - 1].DOFade(0, 0.75f);
-            Debug.Log("前の曲のボリューム下げる");
+            //Debug.Log("前の曲のボリューム下げる");
         } 
         if (index == 3) {
             // 徐々にボリュームを下げる
@@ -32,7 +32,7 @@ public class AudioManager : MonoBehaviour
         // 新しい指定された曲を再生
         audioSources[index].Play();
 
-        Debug.Log("新しい曲を再生し、ボリュームを上げる");
+        //Debug.Log("新しい曲を再生し、ボリュームを上げる");
 
         // 徐々にボリュームを上げていくことで、前の曲と重なるクロスフェード演出ができる
         audioSources[index].DOFade(1.0f, 0.75f);
@@ -44,7 +44,7 @@ public class AudioManager : MonoBehaviour
 
             // 再生を停止
             audioSources[index - 1].Stop();
-            Debug.Log("前の曲を停止");
+            //Debug.Log("前の曲を停止");
         }
     }
 }
