@@ -73,6 +73,7 @@ public class UIManager : MonoBehaviour
     /// タイトルへ戻る
     /// </summary>
     public void RestartGame() {
+        Debug.Log("Title");
 
         // 現在のシーンの名前を取得
         string sceneName = SceneManager.GetActiveScene().name;

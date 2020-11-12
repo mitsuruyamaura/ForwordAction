@@ -38,7 +38,7 @@ public class GoalHouse : MonoBehaviour
             PlayerController playerController = col.gameObject.GetComponent<PlayerController>();
 
             // GameManagerのGoalメソッドを呼び出す。引数にはPlayerControllerのcoinCountを渡す
-            gameManager.Goal(playerController.coinCount);
+            gameManager.Goal(playerController.coinPoint);
 
             // 落下防止の床を表示
             secretfloor.SetActive(true);

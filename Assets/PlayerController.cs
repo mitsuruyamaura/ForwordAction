@@ -12,31 +12,48 @@ public class PlayerController : MonoBehaviour
     private Rigidbody2D rb;
     private Animator anim;
 
-    public float jumpPower;
-    public float moveSpeed;
-
     private float limitPosX = 9.5f;
     private float limitPosY = 4.45f;
-    private float scale;
 
-    [SerializeField, Header("Linecast用 地面判定レイヤー")]
-    private LayerMask groundLayer;
+    public float moveSpeed;
+    public float jumpPower;
+
 
     public bool isGrounded;
 
-    public int maxBallonCount;
+    public GameObject[] ballons;
 
-    public List<Ballon> ballonList = new List<Ballon>();
+    public int maxBallonCount;
 
     public Transform[] ballonTrans;
 
-    public Ballon ballonPrefab;
+    public GameObject ballonPrefab;
 
     public float generateTime;
 
     public bool isGenerating;
 
-    public int coinCount;
+
+    public int coinPoint;
+
+    [SerializeField, Header("Linecast用 地面判定レイヤー")]
+    private LayerMask groundLayer;
+
+
+    [SerializeField]
+    private StartChecker startChecker;
+
+    private bool isFirstGenerateBallon;
+
+
+
+    // 未
+    private float scale;
+
+    public Ballon BallonPrefab;
+
+    public List<Ballon> ballonList = new List<Ballon>();
+
 
     public float knockbackPower;
 
@@ -66,11 +83,14 @@ public class PlayerController : MonoBehaviour
         btnDetach.onClick.AddListener(OnClickDetachOrGenerate);
 
         // バルーン生成
-        StartCoroutine(GenetateBallon(maxBallonCount, 0));
+        //StartCoroutine(GenetateBallon(maxBallonCount, 0));
+
+        // 配列の初期化(位置の数だけ配列の要素数を用意する)
+        ballons = new GameObject[maxBallonCount];
     }
 
     /// <summary>
-    /// 
+    /// バルーン生成
     /// </summary>
     /// <param name="ballonCount">生成するバルーンの数</param>
     /// <param name="waitTime">１つ生成する際の生成にかかる時間</param>
@@ -87,14 +107,24 @@ public class PlayerController : MonoBehaviour
 
         anim.SetTrigger("Generate");
 
+        // まだ１回もバルーンを生成していないなら
+        if (isFirstGenerateBallon == false) {
+            // 初回のバルーン生成済にする
+            isFirstGenerateBallon = true;
+
+            // StartChecker スクリプトが代入されている startChecker 変数を利用して、SetInitialSpeed メソッドを実行する
+            startChecker.SetInitialSpeed();
+        }
+
+
         for (int i = 0; i < ballonCount; i++) {
             Ballon ballon;
             if (ballonList.Count == 0) {
                 // 1つ目のバルーン生成
-                ballon = Instantiate(ballonPrefab, ballonTrans[0]);
+                ballon = Instantiate(BallonPrefab, ballonTrans[0]);
             } else {
                 // 2つ目のバルーン生成
-                ballon = Instantiate(ballonPrefab, ballonTrans[1]);
+                ballon = Instantiate(BallonPrefab, ballonTrans[1]);
             }
 
             // バルーンの設定
@@ -106,24 +136,67 @@ public class PlayerController : MonoBehaviour
         }
 
         // バルーンの数で重力を変化
-        ChangeGravityScale();
+        ChangeLinearDrag();
 
         // 生成中状態終了。再度生成できるようにする
         isGenerating = false;
 
-        anim.SetBool("Idel", true);
+        //anim.SetBool("Idel", true);
     }
 
-    // Update is called once per frame
+    /// <summary>
+    /// バルーン生成
+    /// </summary>
+    /// <returns></returns>
+    private IEnumerator GenerateBallon() {
+        // すべての配列にバルーンの最大値の場合にはバルーンを生成しない
+        if (ballons[1] != null) {
+            yield break;
+        }
+
+        // 生成中状態にする
+        isGenerating = true;
+
+        // ゲームを開始してから、まだバルーンを生成していないなら
+        if (isFirstGenerateBallon == false) {
+            
+            // 初回バルーン生成終了とする
+            isFirstGenerateBallon = true;
+
+            Debug.Log("初回のバルーン生成");
+
+            startChecker.SetInitialSpeed();
+        }
+        
+
+        if (ballons[0] == null) {
+            // 1つ目のバルーン生成
+            ballons[0] = Instantiate(ballonPrefab, ballonTrans[0]);
+            ballons[0].GetComponent<Ballon>().SetUpBallon(this);
+        } else {
+            // 2つ目のバルーン生成
+            ballons[1] = Instantiate(ballonPrefab, ballonTrans[1]);
+            ballons[1].GetComponent<Ballon>().SetUpBallon(this);
+        }
+
+        // 生成時間分待機
+        yield return new WaitForSeconds(generateTime);
+
+        // 生成中状態終了。再度生成できるようにする
+        isGenerating = false;
+    }
+
+
     void Update()
     {
-        // 地面接地
-        isGrounded = Physics2D.Linecast(transform.position + transform.up * 1f, transform.position - transform.up * 0.8f, groundLayer);
+        // 地面接地  Physics2D.Linecastメソッドを実行して、Ground Layerとキャラのコライダーとが接地している距離かどうかを確認し、接地しているなら true、接地していないなら false を戻す
+        isGrounded = Physics2D.Linecast(transform.position + transform.up * 0.4f, transform.position - transform.up * 0.9f, groundLayer);
 
-        Debug.DrawLine(transform.position + transform.up * 1f, transform.position - transform.up * 0.8f, Color.red, 1.0f);
+        // Sceneビューに Physics2D.LinecastメソッドのLineを表示する
+        Debug.DrawLine(transform.position + transform.up * 0.4f, transform.position - transform.up * 0.9f, Color.red, 1.0f);
 
         // バルーンが１つ以上あるなら
-        if (ballonList.Count > 0) {
+        if (ballons[0] != null) {　　　//ballonList.Count
 
             // ジャンプ。バルーンの数が少ないとジャンプの距離も少なくなる
             if (Input.GetButtonDown(jump)) {
@@ -135,28 +208,48 @@ public class PlayerController : MonoBehaviour
                 // すべてのバルーンを切り離す(地面や床にいる間は不可)
                 DetachBallons();
             }
+
+            // 接地していない(空中にいる)間で、落下中の場合
+            if (isGrounded == false && rb.velocity.y < 0.15f) {
+                // 落下アニメを繰り返す
+                anim.SetTrigger("Fall");
+            }
+        } else {
+            Debug.Log("バルーンがない。ジャンプ不可");
         }
 
-        // 一番高い場所まで到達している場合
-        if(rb.velocity.y > 3.0f) {
-            // Y軸の速度に制限をかける(そうしないと上空で待機できてしまう)
-            rb.velocity = new Vector2(rb.velocity.x, 3.0f);
+        // Velocity.y の値が 3.0f を超える場合(ジャンプを連続で押した回数が一定回数を超えた場合)
+        if (rb.velocity.y > 5.0f) {
+            // Velocity.y の値に制限をかける(落下せずに上空で待機できてしまう現象を防ぐため)
+            rb.velocity = new Vector2(rb.velocity.x, 5.0f);
         }
 
         // 地面に接地していて、バルーンが２個以下の場合
-        if (isGrounded == true && ballonList.Count < maxBallonCount) {
+        if (isGrounded == true && isGenerating == false) {　　　//ballonList.Count < maxBallonCount
 
             // バルーンの生成中でなければ、バルーンを１つ作成する
-            if (Input.GetKeyDown(KeyCode.Q) && isGenerating == false) {
-                StartCoroutine(GenetateBallon(1, generateTime));
+            if (Input.GetKeyDown(KeyCode.Q)) {
+                //StartCoroutine(GenetateBallon(1, generateTime));
+                StartCoroutine(GenerateBallon());
             }
         }
     }
 
+    /// <summary>
+    /// ジャンプと空中浮遊
+    /// </summary>
     private void Jump() {
-        rb.AddForce(transform.up * jumpPower * ballonList.Count / maxBallonCount);
-        anim.SetBool("Idel", false);
-        anim.SetFloat("Run", 0);
+        // キャラの位置を上方向へ移動させる(ジャンプ・浮遊)
+        rb.AddForce(transform.up * jumpPower); // * ballonList.Count / maxBallonCount);
+        //if (!anim.GetCurrentAnimatorStateInfo(0).IsName("Jump")) {
+        //    anim.SetBool("Idel", false);
+        //    anim.SetFloat("Run", 0);
+        //    //anim.SetTrigger("Jump");
+
+        //}
+        //anim.ResetTrigger("Fall");
+
+        // Jump(Up + Mid) アニメーションを再生する
         anim.SetTrigger("Jump");
     }
 
@@ -173,7 +266,7 @@ public class PlayerController : MonoBehaviour
         ballonList.Clear();
 
         // バルーンの数で重力を変化
-        ChangeGravityScale();
+        ChangeLinearDrag();
     }
 
     void FixedUpdate() {
@@ -185,9 +278,9 @@ public class PlayerController : MonoBehaviour
     /// 移動
     /// </summary>
     private void Move() {
-        if (isGameOver == true) {           
-            return;
-        }
+        //if (isGameOver == true) {           
+        //    return;
+        //}
 
 #if UNITY_EDITOR
         // 水平(横)方向への入力受付
@@ -213,26 +306,26 @@ public class PlayerController : MonoBehaviour
             }
             transform.localScale = temp;  //  数値を戻す             
 
-            //  歩くアニメを再生する
-            if (isGrounded == true) {
-                anim.SetBool("Idel", false);
-                anim.SetFloat("Run", rb.velocity.x);
-            }
+            //    //  歩くアニメを再生する
+            //if (isGrounded == true) {
+                anim.SetBool("Idle", false);
+                anim.SetFloat("Run", 0.5f);
+            //}
         } else {    //  左右の入力がなかったら横移動の速度を0にしてピタッと止まるようにする
             rb.velocity = new Vector2(0, rb.velocity.y);
             //  アニメの再生を止めてアイドル状態にする
 
-            if (isGrounded == true) {
+            //if (isGrounded == true) {
                 anim.SetFloat("Run", 0.0f);
-                anim.SetBool("Idel", true);
-            }
+                anim.SetBool("Idle", true);
+                //    }
         }
 
-        // 移動範囲の制限
+        // 現在の位置情報が移動範囲の制限範囲を超えていないか確認する。超えていたら、制限範囲内に収める
         float posX = Mathf.Clamp(transform.position.x, -limitPosX, limitPosX);
         float posY = Mathf.Clamp(transform.position.y, -limitPosY, limitPosY);
 
-        // 制限範囲を超えた場合、移動を制限する
+        // 現在の位置を更新(制限範囲を超えた場合、ここで移動の範囲を制限する)
         transform.position = new Vector2(posX, posY);
     }
 
@@ -245,16 +338,30 @@ public class PlayerController : MonoBehaviour
         Destroy(ballon.gameObject);
 
         // バルーンの数で重力を変化
-        ChangeGravityScale();
+        ChangeLinearDrag();
+    }
+
+    /// <summary>
+    /// バルーン破壊
+    /// </summary>
+    public void DestroyBallon() {
+
+        // TODO 後程、バルーンが破壊される際に「割れた」ように見えるアニメ演出を追加する
+        
+        if (ballons[1] != null) {
+            Destroy(ballons[1]);
+        } else if (ballons[0] != null){
+            Destroy(ballons[0]);
+        }
     }
 
     private void OnTriggerEnter2D(Collider2D col) {
 
         // コインに接触した場合
         if (col.gameObject.tag == "Coin") {
-            coinCount += col.gameObject.GetComponent<Coin>().point;
+            coinPoint += col.gameObject.GetComponent<Coin>().point;
 
-            uiManager.UpdateDisplayScore(coinCount);
+            uiManager.UpdateDisplayScore(coinPoint);
             Destroy(col.gameObject);
         }
     }
@@ -267,7 +374,7 @@ public class PlayerController : MonoBehaviour
 
             // 敵の反対側に吹き飛ばされる
             //transform.DOMove(transform.position += (direction * knockbackPower), 0.1f);
-            transform.position += (direction * knockbackPower);
+            transform.position += direction * knockbackPower;
         }
     }
 
@@ -286,16 +393,19 @@ public class PlayerController : MonoBehaviour
     }
 
     /// <summary>
-    /// バルーンの数に応じて重力を変化
+    /// バルーンの数に応じて空気抵抗を変化
     /// </summary>
-    private void ChangeGravityScale() {
-        // バルーンの数が少ないほど重力が大きくなり、自然落下の速度が速くなる
+    private void ChangeLinearDrag() {
+        // バルーンの数が少ないほど空気抵抗が少なくなり、自然落下の速度が速くなる
         if (ballonList.Count == 0) {
-            rb.gravityScale = 1.0f;
+            //rb.gravityScale = 1.0f;
+            rb.drag = 0;
         } else if (ballonList.Count == 1){
-            rb.gravityScale = 0.75f;
+            //rb.gravityScale = 0.75f;
+            rb.drag = 1.5f;
         } else {
-            rb.gravityScale = 0.5f;
+            //rb.gravityScale = 0.5f;
+            rb.drag = 3f;
         }
     }
 
