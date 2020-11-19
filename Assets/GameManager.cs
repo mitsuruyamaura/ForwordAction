@@ -5,6 +5,18 @@ using System.Linq;
 
 public class GameManager : MonoBehaviour
 {
+    public bool isGameUp;
+
+    [SerializeField]
+    private ResultPopUp resultPopUpPrefab;
+
+    [SerializeField]
+    private Transform canvasTran;
+
+
+    // 未
+
+
     [SerializeField]
     private GameObject aerialFloorPrefab;
 
@@ -39,11 +51,6 @@ public class GameManager : MonoBehaviour
 
     public GameObject signPrefab;
 
-    public bool isGameUp;
-
-    public GameObject ResultPopUpPrefab;
-
-    public Transform canvasTran;
 
     [SerializeField]
     private UIManager uiManager;
@@ -189,7 +196,7 @@ public class GameManager : MonoBehaviour
     /// </summary>
     private void GenerateGoal() {
         GameObject goal = Instantiate(goalPrefab);
-        GoalHouse goalHouse = goal.GetComponent<GoalHouse>();
+        GoalChecker goalHouse = goal.GetComponent<GoalChecker>();
         goalHouse.SetUpGoalHouse(this);
     }
 
@@ -209,8 +216,11 @@ public class GameManager : MonoBehaviour
         // クリアの曲再生
         StartCoroutine(audioManager.PlayBGM(2));
 
-        GameObject resultPopUp = Instantiate(ResultPopUpPrefab, canvasTran, false);
-        resultPopUp.GetComponent<ResultPopUp>().SetUpResultPopUp(score);
+        //GameObject resultPopUp = Instantiate(ResultPopUpPrefab, canvasTran, false);
+        //resultPopUp.GetComponent<ResultPopUp>().SetUpResultPopUp(score);
+
+        ResultPopUp resultPopUp = Instantiate(resultPopUpPrefab, canvasTran, false);
+        resultPopUp.SetUpResultPopUp(score);
     }
 
     /// <summary>

@@ -14,12 +14,107 @@ public class UIManager : MonoBehaviour
     private Text txtInfo;
 
     [SerializeField]
-    private Text txtStart;
+    private CanvasGroup canvasGroupInfo;
 
-    public CanvasGroup canvasGroupInfo;
+    [SerializeField]
+    private ResultPopUp resultPopUpPrefab;
+
+    [SerializeField]
+    private Transform canvasTran;
+
+    [SerializeField]
+    private Button btnInfo;
+
+    [SerializeField]
+    private Button btnTitle;
+
+    [SerializeField]
+    private Text lblStart;
 
     [SerializeField]
     private CanvasGroup canvasGroupTitle;
+
+
+    /// <summary>
+    /// ゲームオーバー表示
+    /// </summary>
+    public void DisplayGameOverInfo() {
+
+        canvasGroupInfo.DOFade(1.0f, 1.0f);
+
+        txtInfo.DOText("Game Over...", 1.0f);
+
+        btnInfo.onClick.AddListener(RestartGame);
+    }
+
+    /// <summary>
+    /// スコア表示を更新
+    /// </summary>
+    /// <param name="score"></param>
+    public void UpdateDisplayScore(int score) {
+        txtScore.text = score.ToString();
+    }
+
+    /// <summary>
+    /// ResultPopUpを生成
+    /// </summary>
+    /// <param name="score"></param>
+    public void GenerateRusultPopUp(int score) {
+        ResultPopUp resultPopUp = Instantiate(resultPopUpPrefab, canvasTran, false);
+        resultPopUp.SetUpResultPopUp(score);
+    }
+
+    /// <summary>
+    /// タイトルへ戻る
+    /// </summary>
+    public void RestartGame() {
+        Debug.Log("Restart");
+
+        // ボタンからメソッドを削除(重複クリック防止)
+        btnInfo.onClick.RemoveAllListeners();
+
+        // 現在のシーンの名前を取得
+        string sceneName = SceneManager.GetActiveScene().name;
+
+        canvasGroupInfo.DOFade(0f, 1.0f).OnComplete(() => { SceneManager.LoadScene(sceneName); });
+    }
+
+
+    private void Start() {
+
+        // タイトル表示
+        SwitchDisplayTitle(true, 1.0f);
+
+        btnTitle.onClick.AddListener(OnClickTitle);
+    }
+
+    /// <summary>
+    /// タイトル表示
+    /// </summary>
+    public void SwitchDisplayTitle(bool isSwitch, float alpha) {
+        if (isSwitch) canvasGroupTitle.alpha = 0;
+
+        canvasGroupTitle.DOFade(alpha, 1.0f).SetEase(Ease.Linear).OnComplete(() => {
+            lblStart.gameObject.SetActive(isSwitch);
+        });
+
+        // Tap Startの文字をゆっくり点滅させる
+        lblStart.gameObject.GetComponent<CanvasGroup>().DOFade(0, 1.0f).SetEase(Ease.Linear).SetLoops(-1, LoopType.Yoyo);
+    }
+
+    /// <summary>
+    /// タイトル表示中に画面をクリックした際の処理
+    /// </summary>
+    private void OnClickTitle() {
+        // ボタンのメソッドを削除して重複タップ防止
+        btnTitle.onClick.RemoveAllListeners();
+
+        // タイトルを徐々に非表示
+        SwitchDisplayTitle(false, 0.0f);
+
+        // タイトル表示が消えるのと入れ替わりで、ゲームスタートの文字を表示する
+        StartCoroutine(DisplayGameStartInfo());
+    }
 
     /// <summary>
     /// ゲームスタート表示
@@ -34,50 +129,7 @@ public class UIManager : MonoBehaviour
 
         yield return new WaitForSeconds(1.0f);
         canvasGroupInfo.DOFade(0f, 0.5f);
-    }
 
-    /// <summary>
-    /// ゲームオーバー表示
-    /// </summary>
-    public void DisplayGameOverInfo() {
-
-        canvasGroupInfo.DOFade(1.0f, 1.0f);
-        txtInfo.text = "Game Over...";
-
-
-    }
-
-    /// <summary>
-    /// スコア表示を更新
-    /// </summary>
-    /// <param name="score"></param>
-    public void UpdateDisplayScore(int score) {
-        txtScore.text = score.ToString();
-    }
-
-    /// <summary>
-    /// タイトル表示
-    /// </summary>
-    public void SwitchDisplayTitle(bool isSwitch, float alpha) {
-        if (isSwitch) canvasGroupTitle.alpha = 0;
-
-        canvasGroupTitle.DOFade(alpha, 1.0f).SetEase(Ease.Linear).OnComplete(() => {
-            txtStart.gameObject.SetActive(isSwitch);
-        });
-
-        // Tap Startの文字をゆっくり点滅させる
-        txtStart.gameObject.GetComponent<CanvasGroup>().DOFade(0, 1.0f).SetEase(Ease.Linear).SetLoops(-1, LoopType.Yoyo);
-    }
-
-    /// <summary>
-    /// タイトルへ戻る
-    /// </summary>
-    public void RestartGame() {
-        Debug.Log("Title");
-
-        // 現在のシーンの名前を取得
-        string sceneName = SceneManager.GetActiveScene().name;
-
-        canvasGroupInfo.DOFade(0f, 1.0f).OnComplete(()=> { SceneManager.LoadScene(sceneName); });
+        canvasGroupTitle.gameObject.SetActive(false);
     }
 }
