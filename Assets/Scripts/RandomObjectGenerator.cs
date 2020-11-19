@@ -17,6 +17,10 @@ public class RandomObjectGenerator : MonoBehaviour
 
     private float timer;                      // 待機時間の計測用
 
+    private bool isActivate;                  // ジェネレータを動かすかどうか。trueなら動かす
+
+    private GameDirector gameDirector;
+
 
     void Start() {
         SetGenerateTime();    
@@ -32,6 +36,12 @@ public class RandomObjectGenerator : MonoBehaviour
 
     void Update()
     {
+
+        // 動かす状態になるまで、ジェネレータを動かなさい
+        if (isActivate == false) {
+            return;
+        }
+
         // 計測用タイマーを加算
         timer += Time.deltaTime;
         
@@ -54,9 +64,23 @@ public class RandomObjectGenerator : MonoBehaviour
         int randomIndex = Random.Range(0, objPrefab.Length);
 
         // プレファブを元にクローンのゲームオブジェクトを生成
-        Instantiate(objPrefab[randomIndex], generateTran);
+        GameObject obj = Instantiate(objPrefab[randomIndex], generateTran);
+
+        // ランダムな値を取得
+        float randomPosY = Random.Range(-4.0f, 4.0f);
+
+        // 生成されたゲームオブジェクトのY軸にランダムな値を加算して、生成されるたびに高さの位置を変更する
+        obj.transform.position = new Vector2(obj.transform.position.x, obj.transform.position.y + randomPosY);
 
         // 次の生成までの時間をセットする
         SetGenerateTime();
+    }
+
+    /// <summary>
+    /// ジェネレータのオン/オフを切り替え
+    /// </summary>
+    /// <param name="isSwitch"></param>
+    public void SwitchActivation(bool isSwitch) {
+        isActivate = isSwitch;
     }
 }

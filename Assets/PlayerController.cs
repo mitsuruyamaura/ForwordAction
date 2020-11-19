@@ -13,11 +13,14 @@ public class PlayerController : MonoBehaviour
     private Animator anim;
 
     private float limitPosX = 9.5f;
-    private float limitPosY = 4.45f;
+    private float limitPosY = 4.5f;
+
+    public bool isFirstGenerateBallon;   // publicにする
+
+    private bool isGameOver;
 
     public float moveSpeed;
     public float jumpPower;
-
 
     public bool isGrounded;
 
@@ -33,18 +36,29 @@ public class PlayerController : MonoBehaviour
 
     public bool isGenerating;
 
-
     public int coinPoint;
+
+    public UIManager uiManager;
+
 
     [SerializeField, Header("Linecast用 地面判定レイヤー")]
     private LayerMask groundLayer;
 
-
     [SerializeField]
     private StartChecker startChecker;
 
-    private bool isFirstGenerateBallon;
 
+    [SerializeField]
+    private AudioClip knockbackSE;
+
+    [SerializeField, HideInInspector]
+    private AudioClip coinSE;
+
+    [SerializeField]
+    private GameObject knockbackEffectPrefab;
+
+    [SerializeField, HideInInspector]
+    private GameObject coinEffectPrefab;
 
 
     // 未
@@ -57,9 +71,8 @@ public class PlayerController : MonoBehaviour
 
     public float knockbackPower;
 
-    public bool isGameOver;
 
-    public UIManager uiManager;
+
 
     [SerializeField]
     private Joystick joystick;
@@ -69,6 +82,7 @@ public class PlayerController : MonoBehaviour
 
     [SerializeField]
     private Button btnDetach;
+
 
 
     void Start()
@@ -278,9 +292,9 @@ public class PlayerController : MonoBehaviour
     /// 移動
     /// </summary>
     private void Move() {
-        //if (isGameOver == true) {           
-        //    return;
-        //}
+        if (isGameOver == true) {
+            return;
+        }
 
 #if UNITY_EDITOR
         // 水平(横)方向への入力受付
@@ -363,6 +377,11 @@ public class PlayerController : MonoBehaviour
 
             uiManager.UpdateDisplayScore(coinPoint);
             Destroy(col.gameObject);
+
+            AudioSource.PlayClipAtPoint(coinSE, transform.position);
+
+            GameObject coinEffect = Instantiate(coinEffectPrefab, col.transform.position, Quaternion.identity);
+            Destroy(coinEffect, 0.5f);
         }
     }
 
@@ -375,6 +394,11 @@ public class PlayerController : MonoBehaviour
             // 敵の反対側に吹き飛ばされる
             //transform.DOMove(transform.position += (direction * knockbackPower), 0.1f);
             transform.position += direction * knockbackPower;
+
+            AudioSource.PlayClipAtPoint(knockbackSE, transform.position);
+
+            GameObject knockbackEffect = Instantiate(knockbackEffectPrefab, col.transform.position, Quaternion.identity);
+            Destroy(knockbackEffect, 0.5f);
         }
     }
 
@@ -383,6 +407,10 @@ public class PlayerController : MonoBehaviour
     /// </summary>
     public void GameOver() {
         isGameOver = true;
+
+        Debug.Log(isGameOver);
+
+        uiManager.DisplayGameOverInfo();
     }
 
     /// <summary>

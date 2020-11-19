@@ -35,7 +35,7 @@ public class AudioManager : MonoBehaviour
         //Debug.Log("新しい曲を再生し、ボリュームを上げる");
 
         // 徐々にボリュームを上げていくことで、前の曲と重なるクロスフェード演出ができる
-        audioSources[index].DOFade(1.0f, 0.75f);
+        audioSources[index].DOFade(0.1f, 0.75f);
 
         // 前に流れていたBGMを停止
         if (index != 0) {

@@ -4,13 +4,22 @@ using UnityEngine;
 
 public class GameOverZone : MonoBehaviour
 {
+    [HideInInspector]
     public GameManager gameManager;
+
+
+    [SerializeField]
+    private AudioManager audioManager;
 
     private void OnTriggerEnter2D(Collider2D col) {
         if (col.gameObject.tag == "Player") {
             col.gameObject.GetComponent<PlayerController>().GameOver();
 
-            gameManager.GameOver();
+            //gameManager.GameOver();
+
+
+            StartCoroutine(audioManager.PlayBGM(3));
+
             Debug.Log("Game Over");
         }
     }
