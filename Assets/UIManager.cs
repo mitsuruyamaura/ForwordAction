@@ -34,6 +34,10 @@ public class UIManager : MonoBehaviour
     [SerializeField]
     private CanvasGroup canvasGroupTitle;
 
+    Tweener tweener;
+
+    [Header("タイトル画面でクリックされたかどうか判定")]
+    public bool isTitleClicked = false;
 
     /// <summary>
     /// ゲームオーバー表示
@@ -99,7 +103,10 @@ public class UIManager : MonoBehaviour
         });
 
         // Tap Startの文字をゆっくり点滅させる
-        lblStart.gameObject.GetComponent<CanvasGroup>().DOFade(0, 1.0f).SetEase(Ease.Linear).SetLoops(-1, LoopType.Yoyo);
+        tweener = lblStart.gameObject.GetComponent<CanvasGroup>().DOFade(0, 1.0f).SetEase(Ease.Linear).SetLoops(-1, LoopType.Yoyo);
+            //.OnStepComplete(() => { Debug.Log("t"); });
+        
+
     }
 
     /// <summary>
@@ -114,6 +121,8 @@ public class UIManager : MonoBehaviour
 
         // タイトル表示が消えるのと入れ替わりで、ゲームスタートの文字を表示する
         StartCoroutine(DisplayGameStartInfo());
+
+        isTitleClicked = true;
     }
 
     /// <summary>

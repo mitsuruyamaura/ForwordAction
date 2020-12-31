@@ -19,7 +19,7 @@ public class GoalChecker : MonoBehaviour
     //　未
 
     [SerializeField]
-    private GameObject secretfloor;
+    private GameObject secretfloorObj;
 
 
     /// <summary>
@@ -30,7 +30,7 @@ public class GoalChecker : MonoBehaviour
         this.gameManager = gameManager;
 
         // 落下防止の床を非表示
-        secretfloor.SetActive(false);
+        secretfloorObj.SetActive(false);
     }
 
     void Update() {
@@ -57,10 +57,10 @@ public class GoalChecker : MonoBehaviour
             //gameManager.Goal(playerController.coinPoint);
 
             // 落下防止の床を表示
-            //secretfloor.SetActive(true);
+            secretfloorObj.SetActive(true);
 
             // 落下防止の床を画面下からアニメさせて表示
-            //secretfloor.transform.DOLocalMoveY(0.45f, 2.5f).SetEase(Ease.Linear).SetRelative();
+            secretfloorObj.transform.DOLocalMoveY(0.45f, 2.5f).SetEase(Ease.Linear).SetRelative();
         }
     }
 
@@ -72,6 +72,6 @@ public class GoalChecker : MonoBehaviour
         this.gameDirector = gameDirector;
 
         // 落下防止の床を非表示
-        //secretfloor.SetActive(false);
+        secretfloorObj.SetActive(false);
     }
 }

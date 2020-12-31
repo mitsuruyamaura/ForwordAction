@@ -24,13 +24,17 @@ public class PlayerController : MonoBehaviour
 
     public bool isGrounded;
 
-    public GameObject[] ballons;
+    //public GameObject[] ballons;
+
+    public List<Ballon> ballonList = new List<Ballon>();
 
     public int maxBallonCount;
 
     public Transform[] ballonTrans;
 
-    public GameObject ballonPrefab;
+    //public GameObject ballonPrefab;
+
+    public Ballon BallonPrefab;
 
     public float generateTime;
 
@@ -60,20 +64,6 @@ public class PlayerController : MonoBehaviour
     [SerializeField, HideInInspector]
     private GameObject coinEffectPrefab;
 
-
-    // 未
-    private float scale;
-
-    public Ballon BallonPrefab;
-
-    public List<Ballon> ballonList = new List<Ballon>();
-
-
-    public float knockbackPower;
-
-
-
-
     [SerializeField]
     private Joystick joystick;
 
@@ -83,6 +73,13 @@ public class PlayerController : MonoBehaviour
     [SerializeField]
     private Button btnDetach;
 
+    private int ballonCount;
+
+
+    // 未
+    private float scale;
+
+    public float knockbackPower;
 
 
     void Start()
@@ -100,7 +97,7 @@ public class PlayerController : MonoBehaviour
         //StartCoroutine(GenetateBallon(maxBallonCount, 0));
 
         // 配列の初期化(位置の数だけ配列の要素数を用意する)
-        ballons = new GameObject[maxBallonCount];
+        //ballons = new GameObject[maxBallonCount];
     }
 
     /// <summary>
@@ -133,13 +130,25 @@ public class PlayerController : MonoBehaviour
 
         for (int i = 0; i < ballonCount; i++) {
             Ballon ballon;
-            if (ballonList.Count == 0) {
+
+            // 1つ目のバルーンの生成位置にバルーンがない場合
+            if (ballonTrans[0].childCount == 0) {
                 // 1つ目のバルーン生成
                 ballon = Instantiate(BallonPrefab, ballonTrans[0]);
+
+                // 1つ目のバルーンの生成位置にバルーンがある場合
             } else {
                 // 2つ目のバルーン生成
                 ballon = Instantiate(BallonPrefab, ballonTrans[1]);
             }
+
+            //if (ballonList.Count == 0) {
+            //    // 1つ目のバルーン生成
+            //    ballon = Instantiate(BallonPrefab, ballonTrans[0]);
+            //} else {
+            //    // 2つ目のバルーン生成
+            //    ballon = Instantiate(BallonPrefab, ballonTrans[1]);
+            //}
 
             // バルーンの設定
             ballon.SetUpBallon(this);
@@ -162,43 +171,44 @@ public class PlayerController : MonoBehaviour
     /// バルーン生成
     /// </summary>
     /// <returns></returns>
-    private IEnumerator GenerateBallon() {
-        // すべての配列にバルーンの最大値の場合にはバルーンを生成しない
-        if (ballons[1] != null) {
-            yield break;
-        }
+    //private IEnumerator GenerateBallon() {
+    //    // すべての配列にバルーンの最大値の場合にはバルーンを生成しない
+    //    if (ballons[1] != null) {
+    //        yield break;
+    //    }
 
-        // 生成中状態にする
-        isGenerating = true;
+    //    // 生成中状態にする
+    //    isGenerating = true;
 
-        // ゲームを開始してから、まだバルーンを生成していないなら
-        if (isFirstGenerateBallon == false) {
+    //    // ゲームを開始してから、まだバルーンを生成していないなら
+    //    if (isFirstGenerateBallon == false) {
             
-            // 初回バルーン生成終了とする
-            isFirstGenerateBallon = true;
+    //        // 初回バルーン生成終了とする
+    //        isFirstGenerateBallon = true;
 
-            Debug.Log("初回のバルーン生成");
+    //        Debug.Log("初回のバルーン生成");
 
-            startChecker.SetInitialSpeed();
-        }
+    //        startChecker.SetInitialSpeed();
+    //    }
         
 
-        if (ballons[0] == null) {
-            // 1つ目のバルーン生成
-            ballons[0] = Instantiate(ballonPrefab, ballonTrans[0]);
-            ballons[0].GetComponent<Ballon>().SetUpBallon(this);
-        } else {
-            // 2つ目のバルーン生成
-            ballons[1] = Instantiate(ballonPrefab, ballonTrans[1]);
-            ballons[1].GetComponent<Ballon>().SetUpBallon(this);
-        }
+    //    if (ballons[0] == null) {
+    //        // 1つ目のバルーン生成
+    //        ballons[0] = Instantiate(ballonPrefab, ballonTrans[0]);
+    //        ballons[0].GetComponent<Ballon>().SetUpBallon(this);
+    //    } else {
+    //        // 2つ目のバルーン生成
+    //        ballons[1] = Instantiate(ballonPrefab, ballonTrans[1]);
+    //        ballons[1].GetComponent<Ballon>().SetUpBallon(this);
+    //    }
+    //    ballonCount++;
 
-        // 生成時間分待機
-        yield return new WaitForSeconds(generateTime);
+    //    // 生成時間分待機
+    //    yield return new WaitForSeconds(generateTime);
 
-        // 生成中状態終了。再度生成できるようにする
-        isGenerating = false;
-    }
+    //    // 生成中状態終了。再度生成できるようにする
+    //    isGenerating = false;
+    //}
 
 
     void Update()
@@ -210,7 +220,7 @@ public class PlayerController : MonoBehaviour
         Debug.DrawLine(transform.position + transform.up * 0.4f, transform.position - transform.up * 0.9f, Color.red, 1.0f);
 
         // バルーンが１つ以上あるなら
-        if (ballons[0] != null) {　　　//ballonList.Count
+        if (ballonList.Count > 0) {　　　//  ballons[0] != null
 
             // ジャンプ。バルーンの数が少ないとジャンプの距離も少なくなる
             if (Input.GetButtonDown(jump)) {
@@ -239,12 +249,12 @@ public class PlayerController : MonoBehaviour
         }
 
         // 地面に接地していて、バルーンが２個以下の場合
-        if (isGrounded == true && isGenerating == false) {　　　//ballonList.Count < maxBallonCount
+        if (isGrounded == true && isGenerating == false && ballonList.Count < maxBallonCount) {　　　//ballonList.Count < maxBallonCount
 
             // バルーンの生成中でなければ、バルーンを１つ作成する
             if (Input.GetKeyDown(KeyCode.Q)) {
-                //StartCoroutine(GenetateBallon(1, generateTime));
-                StartCoroutine(GenerateBallon());
+                StartCoroutine(GenetateBallon(1, generateTime));
+                //StartCoroutine(GenerateBallon());
             }
         }
     }
@@ -299,6 +309,7 @@ public class PlayerController : MonoBehaviour
 #if UNITY_EDITOR
         // 水平(横)方向への入力受付
         float x = Input.GetAxis(horizontal);
+        x = joystick.Horizontal;
 #else
         float x = joystick.Horizontal;
 #endif
@@ -358,16 +369,16 @@ public class PlayerController : MonoBehaviour
     /// <summary>
     /// バルーン破壊
     /// </summary>
-    public void DestroyBallon() {
+    //public void DestroyBallon() {
 
-        // TODO 後程、バルーンが破壊される際に「割れた」ように見えるアニメ演出を追加する
+    //    // TODO 後程、バルーンが破壊される際に「割れた」ように見えるアニメ演出を追加する
         
-        if (ballons[1] != null) {
-            Destroy(ballons[1]);
-        } else if (ballons[0] != null){
-            Destroy(ballons[0]);
-        }
-    }
+    //    if (ballons[1] != null) {
+    //        Destroy(ballons[1]);
+    //    } else if (ballons[0] != null){
+    //        Destroy(ballons[0]);
+    //    }
+    //}
 
     private void OnTriggerEnter2D(Collider2D col) {
 
@@ -437,6 +448,9 @@ public class PlayerController : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// ジャンプボタンを押した際の処理
+    /// </summary>
     private void OnClickJump() {
         // バルーンが１つ以上あるなら
         if (ballonList.Count > 0) {
@@ -444,6 +458,9 @@ public class PlayerController : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// バルーン生成ボタンを押した際の処理
+    /// </summary>
     private void OnClickDetachOrGenerate() {
         // バルーンが1つ以上あり、空中にいる間なら
         if (ballonList.Count > 0 && !isGrounded) {

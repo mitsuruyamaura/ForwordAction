@@ -228,7 +228,7 @@ Transform:
   - {fileID: 677923004}
   - {fileID: 159657941}
   m_Father: {fileID: 0}
-  m_RootOrder: 13
+  m_RootOrder: 14
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &6889675
 MonoBehaviour:
@@ -246,12 +246,12 @@ MonoBehaviour:
   moveSpeed: 3
   jumpPower: 300
   isGrounded: 0
-  ballons: []
+  ballonList: []
   maxBallonCount: 2
   ballonTrans:
   - {fileID: 677923004}
   - {fileID: 159657941}
-  ballonPrefab: {fileID: 9156044579570333828, guid: 6b5504b885e54404ba970dc8433918f7, type: 3}
+  BallonPrefab: {fileID: -2774125410066169905, guid: 252f28f094c7b6d4fbcb626514708525, type: 3}
   generateTime: 2
   isGenerating: 0
   coinPoint: 0
@@ -264,12 +264,10 @@ MonoBehaviour:
   coinSE: {fileID: 0}
   knockbackEffectPrefab: {fileID: 0}
   coinEffectPrefab: {fileID: 0}
-  BallonPrefab: {fileID: -2774125410066169905, guid: 252f28f094c7b6d4fbcb626514708525, type: 3}
-  ballonList: []
-  knockbackPower: 2.5
   joystick: {fileID: 610124225}
   btnJump: {fileID: 1987521339}
   btnDetach: {fileID: 838165074}
+  knockbackPower: 2.5
 --- !u!70 &6889676
 CapsuleCollider2D:
   m_ObjectHideFlags: 0
@@ -317,6 +315,10 @@ PrefabInstance:
     - target: {fileID: 1046902756966668, guid: c91193e0f75c73949bf7928ddd6cd517, type: 3}
       propertyPath: m_Name
       value: Nature_props_38 (2)
+      objectReference: {fileID: 0}
+    - target: {fileID: 1046902756966668, guid: c91193e0f75c73949bf7928ddd6cd517, type: 3}
+      propertyPath: m_IsActive
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 4260197598482188, guid: c91193e0f75c73949bf7928ddd6cd517, type: 3}
       propertyPath: m_LocalPosition.x
@@ -976,6 +978,7 @@ MonoBehaviour:
   btnTitle: {fileID: 1991396430}
   lblStart: {fileID: 156174428}
   canvasGroupTitle: {fileID: 1597375652}
+  isTitleClicked: 0
 --- !u!4 &343571375
 Transform:
   m_ObjectHideFlags: 0
@@ -1164,8 +1167,8 @@ RectTransform:
   - {fileID: 450872644}
   - {fileID: 1478875865}
   - {fileID: 1597375651}
-  - {fileID: 1398003619}
   - {fileID: 610124224}
+  - {fileID: 1398003619}
   m_Father: {fileID: 0}
   m_RootOrder: 8
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -1367,12 +1370,12 @@ MonoBehaviour:
   moveSpeed: 3
   jumpPower: 300
   isGrounded: 0
-  ballons: []
+  ballonList: []
   maxBallonCount: 2
   ballonTrans:
   - {fileID: 911694122}
   - {fileID: 114566328}
-  ballonPrefab: {fileID: 9156044579570333828, guid: 6b5504b885e54404ba970dc8433918f7, type: 3}
+  BallonPrefab: {fileID: 322128272363771450, guid: 6b5504b885e54404ba970dc8433918f7, type: 3}
   generateTime: 2
   isGenerating: 0
   coinPoint: 0
@@ -1383,14 +1386,12 @@ MonoBehaviour:
   startChecker: {fileID: 1466578560}
   knockbackSE: {fileID: 8300000, guid: e2239fdca21a7cc4993220ba3e639d3a, type: 3}
   coinSE: {fileID: 8300000, guid: 71ccb8d2b0fe9404f8cc4f59bfaafab6, type: 3}
-  knockbackEffectPrefab: {fileID: 100004, guid: f95ff734540a0d749be6571b6cb5b37f, type: 3}
+  knockbackEffectPrefab: {fileID: 100000, guid: f06e78284f831ae469c74624ab5d513b, type: 3}
   coinEffectPrefab: {fileID: 100000, guid: aa3fed151f536ee49b583c6a3ac4a2e1, type: 3}
-  BallonPrefab: {fileID: 0}
-  ballonList: []
-  knockbackPower: 2.5
   joystick: {fileID: 610124225}
   btnJump: {fileID: 1987521339}
   btnDetach: {fileID: 838165074}
+  knockbackPower: 2.5
 --- !u!70 &386912341
 CapsuleCollider2D:
   m_ObjectHideFlags: 0
@@ -1719,12 +1720,12 @@ GameObject:
   - component: {fileID: 635406926}
   - component: {fileID: 635406925}
   m_Layer: 0
-  m_Name: TitleObjct
+  m_Name: TitleObject
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!114 &635406925
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1738,6 +1739,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   titleObj: {fileID: 635406924}
+  gameDirector: {fileID: 700963103}
+  uiManager: {fileID: 343571374}
 --- !u!4 &635406926
 Transform:
   m_ObjectHideFlags: 0
@@ -1754,7 +1757,7 @@ Transform:
   - {fileID: 648782129}
   - {fileID: 13018981}
   m_Father: {fileID: 0}
-  m_RootOrder: 14
+  m_RootOrder: 12
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &648782128
 PrefabInstance:
@@ -1766,6 +1769,10 @@ PrefabInstance:
     - target: {fileID: 1046902756966668, guid: c91193e0f75c73949bf7928ddd6cd517, type: 3}
       propertyPath: m_Name
       value: Nature_props_38 (1)
+      objectReference: {fileID: 0}
+    - target: {fileID: 1046902756966668, guid: c91193e0f75c73949bf7928ddd6cd517, type: 3}
+      propertyPath: m_IsActive
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 4260197598482188, guid: c91193e0f75c73949bf7928ddd6cd517, type: 3}
       propertyPath: m_LocalPosition.x
@@ -2030,7 +2037,8 @@ MonoBehaviour:
   randomObjectGenerators:
   - {fileID: 700963102}
   audioManager: {fileID: 2053083063}
-  clearCount: 2
+  isSetUp: 0
+  clearCount: 5
 --- !u!1 &704421347
 GameObject:
   m_ObjectHideFlags: 0
@@ -2938,7 +2946,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8170153791668043268, guid: 0d230cc8be529a542a08cb878ab14b18, type: 3}
       propertyPath: m_RootOrder
-      value: 4
+      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 8170153791668043268, guid: 0d230cc8be529a542a08cb878ab14b18, type: 3}
       propertyPath: m_LocalEulerAnglesHint.x
@@ -2998,7 +3006,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8170153791668043269, guid: 0d230cc8be529a542a08cb878ab14b18, type: 3}
       propertyPath: m_IsActive
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 8170153791961219458, guid: 0d230cc8be529a542a08cb878ab14b18, type: 3}
       propertyPath: m_CullTransparentMesh
@@ -3067,6 +3075,14 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1505324200764152203, guid: 2bb8eacf0fb705d4c998a052a8b3b04f, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1545044719317899506, guid: 2bb8eacf0fb705d4c998a052a8b3b04f, type: 3}
+      propertyPath: m_Enabled
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1783614968609354871, guid: 2bb8eacf0fb705d4c998a052a8b3b04f, type: 3}
+      propertyPath: m_Enabled
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 4364227329941604706, guid: 2bb8eacf0fb705d4c998a052a8b3b04f, type: 3}
@@ -3317,7 +3333,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &1398003619
 RectTransform:
   m_ObjectHideFlags: 0
@@ -3332,7 +3348,7 @@ RectTransform:
   - {fileID: 1987521338}
   - {fileID: 838165073}
   m_Father: {fileID: 384411244}
-  m_RootOrder: 3
+  m_RootOrder: 4
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 1, y: 0}
   m_AnchorMax: {x: 1, y: 0}
@@ -3527,6 +3543,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Nature_props_38
       objectReference: {fileID: 0}
+    - target: {fileID: 1046902756966668, guid: c91193e0f75c73949bf7928ddd6cd517, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 4260197598482188, guid: c91193e0f75c73949bf7928ddd6cd517, type: 3}
       propertyPath: m_LocalPosition.x
       value: -2.5
@@ -3582,6 +3602,10 @@ PrefabInstance:
     - target: {fileID: 4260197598482188, guid: c91193e0f75c73949bf7928ddd6cd517, type: 3}
       propertyPath: m_LocalScale.z
       value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 212065389377950026, guid: c91193e0f75c73949bf7928ddd6cd517, type: 3}
+      propertyPath: m_SortingOrder
+      value: 2
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: c91193e0f75c73949bf7928ddd6cd517, type: 3}
@@ -5371,7 +5395,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b202da36534cd33439809b20f8edecea, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  isFloating: 0
 --- !u!4 &1695715664549178352
 Transform:
   m_ObjectHideFlags: 0
@@ -7247,7 +7270,7 @@ Transform:
   - {fileID: 1708426514352286652}
   - {fileID: 2140422103150527958}
   m_Father: {fileID: 0}
-  m_RootOrder: 12
+  m_RootOrder: 13
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &7432420709745659705
 GameObject:
@@ -7336,7 +7359,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   moveSpeed: 0.01
   gameManager: {fileID: 700963099}
-  secretfloor: {fileID: 1599269145848709557}
+  secretfloorObj: {fileID: 0}
 --- !u!4 &7692146990105040743
 Transform:
   m_ObjectHideFlags: 0

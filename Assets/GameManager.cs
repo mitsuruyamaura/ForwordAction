@@ -91,7 +91,7 @@ public class GameManager : MonoBehaviour
         uiManager.SwitchDisplayTitle(false, 0);
 
         // ゴール地点を画面外に移動させる
-        titleObjectController.MoveObject();
+        titleObjectController.MoveTitleObject();
 
         // スタート地点を少しずつ画面外に移動させる
         //startChecker.SetInitialSpeed();

@@ -979,7 +979,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   moveSpeed: 0.01
-  secretfloor: {fileID: 7442624988709165959}
+  gameManager: {fileID: 0}
+  secretfloorObj: {fileID: 7442624988709165959}
 --- !u!1 &4536863181575719410
 GameObject:
   m_ObjectHideFlags: 0

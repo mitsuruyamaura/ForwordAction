@@ -23,7 +23,7 @@ public class GameDirector : MonoBehaviour
     private AudioManager audioManager;
 
     // ゲームスタートフラグ
-    private bool isSetUp;
+    public bool isSetUp;
 
     // ゲーム終了フラグ
     private bool isGameUp;

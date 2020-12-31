@@ -6,15 +6,11 @@ using DG.Tweening;
 public class Ballon : MonoBehaviour
 {
     private PlayerController playerController;
+    private Tweener tweener;
 
-    [HideInInspector]
-    public bool isFloating;
+    private bool isDetached;
     private Rigidbody2D rb;
     private Vector2 pos;
-
-    private CapsuleCollider2D capsuleCollider;
-
-    private Tweener tweener;
 
     /// <summary>
     /// バルーンの初期設定
@@ -47,7 +43,7 @@ public class Ballon : MonoBehaviour
             tweener.Kill();
 
 
-            playerController.DestroyBallon();
+            //playerController.DestroyBallon();
         }
     }
 
@@ -58,7 +54,7 @@ public class Ballon : MonoBehaviour
         // 左右にふわふわループアニメを破棄する
         tweener.Kill();
 
-        // Rigidbody2Dコンポーネントをバルーンに追加する
+        // Rigidbody2Dコンポーネントをバルーンに追加して代入
         rb = gameObject.AddComponent<Rigidbody2D>();
 
         // 重力は0にする
@@ -67,11 +63,8 @@ public class Ballon : MonoBehaviour
         // 回転も固定する
         rb.freezeRotation = true;
 
-        // バルーンのコライダーを取得する
-        capsuleCollider = GetComponent<CapsuleCollider2D>();
-
-        // コライダーのスイッチをオフにする
-        capsuleCollider.enabled = false;
+        // バルーンのコライダーを取得して、スイッチをオフにする
+        GetComponent<CapsuleCollider2D>().enabled = false;
 
         // バルーンの位置情報を代入
         pos = transform.position;
@@ -80,13 +73,13 @@ public class Ballon : MonoBehaviour
         transform.SetParent(null);
 
         // バルーンとプレイヤーを切り離す状態にする
-        isFloating = true;
+        isDetached = true;
     }
 
     void FixedUpdate() {
 
-        // 切り離されていなければ、処理をしない
-        if (isFloating == false) {
+        // バルーンが切り離されていなければ、処理をしない
+        if (isDetached == false) {
             return;
         }
 
