@@ -742,7 +742,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 52316f2e3e3e8f7459b3952feee9086d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  gameManager: {fileID: 700963099}
   audioManager: {fileID: 2053083063}
 --- !u!61 &170059694
 BoxCollider2D:
