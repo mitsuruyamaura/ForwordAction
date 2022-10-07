@@ -28,13 +28,13 @@ public class ResultPopUp : MonoBehaviour
         canvasGroup.alpha = 0;
 
         // 徐々にResultPopUpを表示
-        canvasGroup.DOFade(1.0f, 1.0f);
+        canvasGroup.DOFade(1.0f, 1.0f).SetLink(gameObject);
 
         // スコアを表示
         txtScore.text = score.ToString();
 
         // リスタートのメッセージをゆっくりと点滅アニメさせる
-        canvasGroupRestart.DOFade(0, 1.0f).SetEase(Ease.InOutQuad).SetLoops(-1, LoopType.Yoyo);
+        canvasGroupRestart.DOFade(0, 1.0f).SetEase(Ease.InOutQuad).SetLoops(-1, LoopType.Yoyo).SetLink(gameObject);
 
         // ボタンにメソッドを登録
         btnTitle.onClick.AddListener(OnClickRestart);
@@ -46,7 +46,7 @@ public class ResultPopUp : MonoBehaviour
     private void OnClickRestart() {
 
         // リザルト表示を徐々に非表示にする
-        canvasGroup.DOFade(0, 1.0f).SetEase(Ease.Linear);
+        canvasGroup.DOFade(0, 1.0f).SetEase(Ease.Linear).SetLink(gameObject);
 
         // 現在のシーンを再度読み込む
         StartCoroutine(Restart());

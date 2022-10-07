@@ -1,7 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using DG.Tweening;
 using UnityEngine.UI;
 
 public class PlayerController : MonoBehaviour
@@ -84,7 +83,7 @@ public class PlayerController : MonoBehaviour
 
     void Start()
     {
-        isGameOver = true;
+        isGameOver = false;
 
         rb = GetComponent<Rigidbody2D>();
         anim = GetComponent<Animator>();
@@ -114,9 +113,9 @@ public class PlayerController : MonoBehaviour
 
         // 生成中状態にする
         isGenerating = true;
-        anim.SetBool("Idel", false);
+        //anim.SetBool("Idle", false);
 
-        anim.SetTrigger("Generate");
+        //anim.SetTrigger("Generate");
 
         // まだ１回もバルーンを生成していないなら
         if (isFirstGenerateBallon == false) {
@@ -164,7 +163,7 @@ public class PlayerController : MonoBehaviour
         // 生成中状態終了。再度生成できるようにする
         isGenerating = false;
 
-        //anim.SetBool("Idel", true);
+        //anim.SetBool("Idle", true);
     }
 
     /// <summary>
@@ -213,11 +212,16 @@ public class PlayerController : MonoBehaviour
 
     void Update()
     {
+        // タイトルクリックされるまで、Update を処理しない
+        if (uiManager.isTitleClicked == false) {
+            return;
+        }
+
         // 地面接地  Physics2D.Linecastメソッドを実行して、Ground Layerとキャラのコライダーとが接地している距離かどうかを確認し、接地しているなら true、接地していないなら false を戻す
         isGrounded = Physics2D.Linecast(transform.position + transform.up * 0.4f, transform.position - transform.up * 0.9f, groundLayer);
 
         // Sceneビューに Physics2D.LinecastメソッドのLineを表示する
-        Debug.DrawLine(transform.position + transform.up * 0.4f, transform.position - transform.up * 0.9f, Color.red, 1.0f);
+        //Debug.DrawLine(transform.position + transform.up * 0.4f, transform.position - transform.up * 0.9f, Color.red, 1.0f);
 
         // バルーンが１つ以上あるなら
         if (ballonList.Count > 0) {　　　//  ballons[0] != null
@@ -294,6 +298,13 @@ public class PlayerController : MonoBehaviour
     }
 
     void FixedUpdate() {
+        // タイトルクリックされるまで、FixedUpdate を処理しない
+        if (uiManager.isTitleClicked == false) {
+            return;
+        }
+
+        // タイトルクリック後は、最初の床でバルーンを生成していないくても移動はすぐに出来るようにする
+
         // 移動
         Move();    
     }
@@ -302,15 +313,16 @@ public class PlayerController : MonoBehaviour
     /// 移動
     /// </summary>
     private void Move() {
-        if (isGameOver == true) {
+        if (isGameOver == true) {  // これを入れておくと、ゲームオーバーゾーン通過時に、キャラの画面制限を超えて画面外下まで落下できる
             return;
         }
 
 #if UNITY_EDITOR
         // 水平(横)方向への入力受付
-        float x = Input.GetAxis(horizontal);
-        x = joystick.Horizontal;
+        float x = joystick.Horizontal;   // この順番で書かないと JoyStick の方が優先されてしまって、キーボード入力値が 0 になってしまう
+        x = Input.GetAxis(horizontal);
 #else
+        x = joystick.Horizontal;
         float x = joystick.Horizontal;
 #endif
         if (x != 0) {
@@ -382,9 +394,11 @@ public class PlayerController : MonoBehaviour
 
     private void OnTriggerEnter2D(Collider2D col) {
 
-        // コインに接触した場合
-        if (col.gameObject.tag == "Coin") {
-            coinPoint += col.gameObject.GetComponent<Coin>().point;
+        if (col.TryGetComponent(out Coin coin)) { 
+        //// コインに接触した場合
+        //if (col.gameObject.tag == "Coin") {
+            //coinPoint += col.gameObject.GetComponent<Coin>().point;
+            coinPoint += coin.point;
 
             uiManager.UpdateDisplayScore(coinPoint);
             Destroy(col.gameObject);
@@ -397,7 +411,8 @@ public class PlayerController : MonoBehaviour
     }
 
     private void OnCollisionEnter2D(Collision2D col) {
-        if (col.gameObject.tag == "Enemy") {
+        if (col.gameObject.TryGetComponent(out VerticalFloatingObject enemy)) { 
+        //if (col.gameObject.tag == "Enemy") {
 
             // プレイヤーと敵の位置から距離と方向を計算
             Vector3 direction = (transform.position - col.transform.position).normalized;

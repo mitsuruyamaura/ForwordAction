@@ -17,7 +17,7 @@ public class IntroCameraController : MonoBehaviour
 
         yield return new WaitForSeconds(GetComponent<AudioSource>().clip.length + 1);
 
-        Application.LoadLevel(nextLevel);
+        //Application.LoadLevel(nextLevel);
     }
 
     void Update()

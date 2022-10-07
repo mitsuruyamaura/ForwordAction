@@ -26,14 +26,17 @@ public class Ballon : MonoBehaviour
         transform.localScale = Vector3.zero;
 
         // だんだんバルーンが膨らむアニメ演出
-        transform.DOScale(scale, 2.0f).SetEase(Ease.InBounce);
+        transform.DOScale(scale, 2.0f).SetEase(Ease.InBounce).SetLink(gameObject);
 
         // 左右にふわふわさせる
-        tweener = transform.DOLocalMoveX(0.02f, 0.2f).SetEase(Ease.Flash).SetLoops(-1, LoopType.Yoyo);
+        tweener = transform.DOLocalMoveX(0.02f, 0.2f).SetEase(Ease.Flash).SetLoops(-1, LoopType.Yoyo).SetLink(gameObject);
     }
 
     private void OnCollisionEnter2D(Collision2D col) {
-        if (col.gameObject.tag == "Enemy") {
+
+        if(col.gameObject.TryGetComponent(out VerticalFloatingObject enemy)) { 
+
+        //if (col.gameObject.tag == "Enemy") {
 
             // PlayerControllerのDestroyBallonメソッドを呼び出し、バルーンの破壊処理を行う
             playerController.DestroyBallon(this);

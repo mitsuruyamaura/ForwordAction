@@ -80,7 +80,7 @@ public class UIManager : MonoBehaviour
         // 現在のシーンの名前を取得
         string sceneName = SceneManager.GetActiveScene().name;
 
-        canvasGroupInfo.DOFade(0f, 1.0f).OnComplete(() => { SceneManager.LoadScene(sceneName); });
+        canvasGroupInfo.DOFade(0f, 1.0f).SetLink(gameObject).OnComplete(() => { SceneManager.LoadScene(sceneName); });
     }
 
 
@@ -98,12 +98,12 @@ public class UIManager : MonoBehaviour
     public void SwitchDisplayTitle(bool isSwitch, float alpha) {
         if (isSwitch) canvasGroupTitle.alpha = 0;
 
-        canvasGroupTitle.DOFade(alpha, 1.0f).SetEase(Ease.Linear).OnComplete(() => {
+        canvasGroupTitle.DOFade(alpha, 1.0f).SetEase(Ease.Linear).SetLink(gameObject).OnComplete(() => {
             lblStart.gameObject.SetActive(isSwitch);
         });
 
         // Tap Startの文字をゆっくり点滅させる
-        tweener = lblStart.gameObject.GetComponent<CanvasGroup>().DOFade(0, 1.0f).SetEase(Ease.Linear).SetLoops(-1, LoopType.Yoyo);
+        tweener = lblStart.gameObject.GetComponent<CanvasGroup>().DOFade(0, 1.0f).SetEase(Ease.Linear).SetLoops(-1, LoopType.Yoyo).SetLink(gameObject);
             //.OnStepComplete(() => { Debug.Log("t"); });
         
 
@@ -133,11 +133,11 @@ public class UIManager : MonoBehaviour
         yield return new WaitForSeconds(0.5f);
 
         canvasGroupInfo.alpha = 0;
-        canvasGroupInfo.DOFade(1.0f, 0.5f);
+        canvasGroupInfo.DOFade(1.0f, 0.5f).SetLink(gameObject);
         txtInfo.text = "Game Start!";
 
         yield return new WaitForSeconds(1.0f);
-        canvasGroupInfo.DOFade(0f, 0.5f);
+        canvasGroupInfo.DOFade(0f, 0.5f).SetLink(gameObject);
 
         canvasGroupTitle.gameObject.SetActive(false);
     }

@@ -18,12 +18,12 @@ public class AudioManager : MonoBehaviour
         // 再生前に別の曲が流れている場合
         if (index != 0) {
             // 徐々にボリュームを下げる
-            audioSources[index - 1].DOFade(0, 0.75f);
+            audioSources[index - 1].DOFade(0, 0.75f).SetLink(gameObject);
             //Debug.Log("前の曲のボリューム下げる");
         } 
         if (index == 3) {
             // 徐々にボリュームを下げる
-            audioSources[index - 2].DOFade(0, 0.75f);
+            audioSources[index - 2].DOFade(0, 0.75f).SetLink(gameObject);
         }
 
         // 前の曲のボリュームが下がるのを待つ
@@ -35,7 +35,7 @@ public class AudioManager : MonoBehaviour
         //Debug.Log("新しい曲を再生し、ボリュームを上げる");
 
         // 徐々にボリュームを上げていくことで、前の曲と重なるクロスフェード演出ができる
-        audioSources[index].DOFade(0.1f, 0.75f);
+        audioSources[index].DOFade(0.1f, 0.75f).SetLink(gameObject);
 
         // 前に流れていたBGMを停止
         if (index != 0) {

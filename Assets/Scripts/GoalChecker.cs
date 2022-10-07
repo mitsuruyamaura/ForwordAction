@@ -40,13 +40,21 @@ public class GoalChecker : MonoBehaviour
     }
 
     private void OnTriggerEnter2D(Collider2D col) {
-        // ゴールした際に１回だけ判定する
-        if (col.gameObject.tag == "Player" && isGoal == false) {
+
+        // すでにゴール判定が済んでいれば処理しない
+        if (isGoal) {
+            return;
+        }
+
+        if (col.TryGetComponent(out PlayerController playerController)) { 
+
+        //// ゴールした際に１回だけ判定する
+        //if (col.gameObject.tag == "Player" && isGoal == false) {
             isGoal = true;
 
             Debug.Log("ゲームクリア");
             // PlayerControllerの情報を取得
-            PlayerController playerController = col.gameObject.GetComponent<PlayerController>();
+            //PlayerController playerController = col.gameObject.GetComponent<PlayerController>();
 
             playerController.uiManager.GenerateRusultPopUp(playerController.coinPoint);
 
@@ -60,7 +68,7 @@ public class GoalChecker : MonoBehaviour
             secretfloorObj.SetActive(true);
 
             // 落下防止の床を画面下からアニメさせて表示
-            secretfloorObj.transform.DOLocalMoveY(0.45f, 2.5f).SetEase(Ease.Linear).SetRelative();
+            secretfloorObj.transform.DOLocalMoveY(0.45f, 2.5f).SetEase(Ease.Linear).SetRelative().SetLink(gameObject);
         }
     }
 

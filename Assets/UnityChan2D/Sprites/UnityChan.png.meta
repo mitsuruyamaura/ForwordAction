@@ -84,6 +84,7 @@ TextureImporter:
   streamingMipmaps: 0
   streamingMipmapsPriority: 0
   vTOnly: 0
+  ignoreMasterTextureLimit: 0
   grayScaleToAlpha: 0
   generateCubemap: 6
   cubemapConvolution: 0
@@ -94,7 +95,7 @@ TextureImporter:
     serializedVersion: 2
     filterMode: 0
     aniso: 1
-    mipBias: -100
+    mipBias: 0
     wrapU: 1
     wrapV: 1
     wrapW: 1
@@ -115,6 +116,8 @@ TextureImporter:
   textureType: 8
   textureShape: 1
   singleChannelComponent: 0
+  flipbookRows: 1
+  flipbookColumns: 1
   maxTextureSizeSet: 0
   compressionQualitySet: 0
   textureFormatSet: 0
@@ -566,6 +569,27 @@ TextureImporter:
     edges: []
     weights: []
     secondaryTextures: []
+    nameFileIdTable:
+      UnityChan_jump_up_1: 2720982409178628056
+      UnityChan_jump_top_0: 1588534504938359808
+      UnityChan_footwork_1: -2414899941940201763
+      UnityChan_jump_down_1: -6513711549821746433
+      UnityChan_jump_down_0: 8391138659858060112
+      UnityChan_damage1_0: -3678486818915674298
+      UnityChan_footwork_2: 262641128833692197
+      UnityChan_footwork_0: -7611175139435793682
+      UnityChan_run_6: 3354454724914323931
+      UnityChan_run_3: 4661362817575464510
+      UnityChan_jump_top_1: -2063287051946429052
+      UnityChan_run_1: -1069406364372454524
+      UnityChan_run_4: -4665226109130300252
+      UnityChan_run_7: 3004384447465003941
+      UnityChan_damage2_0: 1150918814309084964
+      UnityChan_jump_up_0: 3823919914555822538
+      UnityChan_run_0: 4742353339640682416
+      UnityChan_run_2: -3216722775971202192
+      UnityChan_run_5: -1222260141884883289
+      UnityChan_jump_top_2: 6962742172353944144
   spritePackingTag: UnityChan
   pSDRemoveMatte: 0
   pSDShowRemoveMatteOption: 0

@@ -26,6 +26,6 @@ public class TitleObjectController : MonoBehaviour
     /// </summary>
     public void MoveTitleObject() {
         // ゲームスタートに合わせてゴールを画面の右端側に移動させて、画面から見えなくなってから非表示にする
-        titleObj.transform.DOMoveX(15, 2.0f).SetEase(Ease.Linear).OnComplete(() => { titleObj.SetActive(false); });
+        titleObj.transform.DOMoveX(15, 2.0f).SetEase(Ease.Linear).SetLink(gameObject).OnComplete(() => { titleObj.SetActive(false); });
     }
 }
