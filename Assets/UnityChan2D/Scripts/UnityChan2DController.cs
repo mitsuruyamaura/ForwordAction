@@ -17,6 +17,7 @@ public class UnityChan2DController : MonoBehaviour
 
     private State m_state = State.Normal;
 
+    [System.Obsolete]
     void Reset()
     {
         Awake();

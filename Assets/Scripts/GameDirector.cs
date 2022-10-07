@@ -1,4 +1,6 @@
-﻿using System.Collections;
+﻿#pragma warning disable 0414
+
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -26,7 +28,7 @@ public class GameDirector : MonoBehaviour
     public bool isSetUp;
 
     // ゲーム終了フラグ
-    private bool isGameUp;
+    private bool isGameUp = false;
 
     // 生成回数
     private int generateCount;

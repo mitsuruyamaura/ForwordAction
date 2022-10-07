@@ -15,6 +15,6 @@ public class FloatingFloor : MonoBehaviour
         randomValue = Random.Range(0.1f, 0.3f);
 
         // ランダムな高さにふわふわ上下に移動させる
-        transform.DOMoveY(pos.y + randomValue, 2.0f).SetEase(Ease.Linear).SetLoops(-1, LoopType.Yoyo);
+        transform.DOMoveY(pos.y + randomValue, 2.0f).SetEase(Ease.Linear).SetLoops(-1, LoopType.Yoyo).SetLink(gameObject);
     }
 }

@@ -30,6 +30,6 @@ public class StartController : MonoBehaviour
 
         audioSource.Play();
         yield return new WaitForSeconds(audioSource.clip.length + 0.5f);
-        Application.LoadLevel(nextLevel);
+        //Application.LoadLevel(nextLevel);
     }
 }

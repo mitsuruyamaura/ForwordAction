@@ -21,6 +21,8 @@ public class StartChecker : MonoBehaviour
     public void SetInitialSpeed() {
         moveObject.moveSpeed = 0.005f;
 
-        playerController.GameStart();
+        // ゲームスタート時から移動させたい場合には使わない
+        // バルーンの生成とリンクしたい場合には使う
+        //playerController.GameStart();
     }
 }

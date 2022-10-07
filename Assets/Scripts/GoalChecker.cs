@@ -60,7 +60,7 @@ public class GoalChecker : MonoBehaviour
             secretfloorObj.SetActive(true);
 
             // 落下防止の床を画面下からアニメさせて表示
-            secretfloorObj.transform.DOLocalMoveY(0.45f, 2.5f).SetEase(Ease.Linear).SetRelative();
+            secretfloorObj.transform.DOLocalMoveY(0.45f, 2.5f).SetEase(Ease.Linear).SetRelative().SetLink(gameObject);
         }
     }
 

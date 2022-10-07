@@ -11,6 +11,6 @@ public class VerticalFloatingObject : MonoBehaviour
 
     void Start()
     {
-        transform.DOMoveY(transform.position.y - moveRange, moveTime).SetEase(Ease.Linear).SetLoops(-1, LoopType.Yoyo);
+        transform.DOMoveY(transform.position.y - moveRange, moveTime).SetEase(Ease.Linear).SetLoops(-1, LoopType.Yoyo).SetLink(gameObject);
     }
 }
