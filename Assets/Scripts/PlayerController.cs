@@ -394,9 +394,11 @@ public class PlayerController : MonoBehaviour
 
     private void OnTriggerEnter2D(Collider2D col) {
 
-        // コインに接触した場合
-        if (col.gameObject.tag == "Coin") {
-            coinPoint += col.gameObject.GetComponent<Coin>().point;
+        if (col.TryGetComponent(out Coin coin)) { 
+        //// コインに接触した場合
+        //if (col.gameObject.tag == "Coin") {
+            //coinPoint += col.gameObject.GetComponent<Coin>().point;
+            coinPoint += coin.point;
 
             uiManager.UpdateDisplayScore(coinPoint);
             Destroy(col.gameObject);
@@ -409,7 +411,8 @@ public class PlayerController : MonoBehaviour
     }
 
     private void OnCollisionEnter2D(Collision2D col) {
-        if (col.gameObject.tag == "Enemy") {
+        if (col.gameObject.TryGetComponent(out VerticalFloatingObject enemy)) { 
+        //if (col.gameObject.tag == "Enemy") {
 
             // プレイヤーと敵の位置から距離と方向を計算
             Vector3 direction = (transform.position - col.transform.position).normalized;

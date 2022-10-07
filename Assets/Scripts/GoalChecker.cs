@@ -40,13 +40,21 @@ public class GoalChecker : MonoBehaviour
     }
 
     private void OnTriggerEnter2D(Collider2D col) {
-        // ゴールした際に１回だけ判定する
-        if (col.gameObject.tag == "Player" && isGoal == false) {
+
+        // すでにゴール判定が済んでいれば処理しない
+        if (isGoal) {
+            return;
+        }
+
+        if (col.TryGetComponent(out PlayerController playerController)) { 
+
+        //// ゴールした際に１回だけ判定する
+        //if (col.gameObject.tag == "Player" && isGoal == false) {
             isGoal = true;
 
             Debug.Log("ゲームクリア");
             // PlayerControllerの情報を取得
-            PlayerController playerController = col.gameObject.GetComponent<PlayerController>();
+            //PlayerController playerController = col.gameObject.GetComponent<PlayerController>();
 
             playerController.uiManager.GenerateRusultPopUp(playerController.coinPoint);
 

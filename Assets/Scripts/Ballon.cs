@@ -33,7 +33,10 @@ public class Ballon : MonoBehaviour
     }
 
     private void OnCollisionEnter2D(Collision2D col) {
-        if (col.gameObject.tag == "Enemy") {
+
+        if(col.gameObject.TryGetComponent(out VerticalFloatingObject enemy)) { 
+
+        //if (col.gameObject.tag == "Enemy") {
 
             // PlayerControllerのDestroyBallonメソッドを呼び出し、バルーンの破壊処理を行う
             playerController.DestroyBallon(this);
