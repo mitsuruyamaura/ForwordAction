@@ -1,9 +1,9 @@
 ﻿using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using DG.Tweening;
 using UnityEngine.SceneManagement;
+//using Debug = UnityEngine.Debug;
 
 public class UIManager : MonoBehaviour
 {
@@ -102,11 +102,15 @@ public class UIManager : MonoBehaviour
             lblStart.gameObject.SetActive(isSwitch);
         });
 
-        // Tap Startの文字をゆっくり点滅させる
-        tweener = lblStart.gameObject.GetComponent<CanvasGroup>().DOFade(0, 1.0f).SetEase(Ease.Linear).SetLoops(-1, LoopType.Yoyo).SetLink(gameObject);
+        if (tweener == null) {
+            // Tap Startの文字をゆっくり点滅させる
+            tweener = lblStart.gameObject.GetComponent<CanvasGroup>().DOFade(0, 1.0f).SetEase(Ease.Linear)
+                .SetLoops(-1, LoopType.Yoyo).SetLink(gameObject);
             //.OnStepComplete(() => { Debug.Log("t"); });
-        
-
+        }
+        else {
+            tweener.Kill();
+        }
     }
 
     /// <summary>
@@ -140,5 +144,7 @@ public class UIManager : MonoBehaviour
         canvasGroupInfo.DOFade(0f, 0.5f).SetLink(gameObject);
 
         canvasGroupTitle.gameObject.SetActive(false);
+        
+        Debug.Log("Game Start!");
     }
 }
